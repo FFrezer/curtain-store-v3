@@ -1,27 +1,60 @@
 {
   "name": "curtain-store",
   "version": "0.1.0",
+  "type": "module",
   "private": true,
   "scripts": {
+    "seed": "ts-node prisma/seed.js",
     "dev": "next dev",
     "build": "next build",
+    "tailwind": "npx tailwindcss -i ./app/globals.css -o ./out.css --watch",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "postinstall": "prisma generate",
+    "clean": "rd /s /q node_modules && rd /s /q .next && npm install"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.832.0",
+    "@prisma/client": "^6.8.2",
+    "@tailwindcss/forms": "^0.5.10",
+    "@tailwindcss/typography": "^0.5.16",
+    "clsx": "^2.1.1",
+    "formidable": "^3.5.4",
+    "keen-slider": "^6.8.6",
+    "lucide-react": "^0.514.0",
+    "next": "15.3.2",
+    "next-auth": "^4.24.11",
+    "next-intl": "^4.1.0",
+    "nodemailer": "^6.10.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "next": "15.3.2"
+    "react-dropzone": "^14.3.8",
+    "react-hot-toast": "^2.5.2",
+    "react-swipeable": "^7.0.2",
+    "resend": "^4.5.2",
+    "uuid": "^11.1.0"
   },
   "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
-    "@types/react": "^19",
+    "@eslint/eslintrc": "^3",
+    "@tailwindcss/aspect-ratio": "^0.4.2",
+    "@types/estree": "^1.0.8",
+    "@types/formidable": "^3.4.5",
+    "@types/node": "^20.17.50",
+    "@types/nodemailer": "^6.4.17",
+    "@types/react": "^19.1.8",
     "@types/react-dom": "^19",
-    "@tailwindcss/postcss": "^4",
-    "tailwindcss": "^4",
+    "@types/uuid": "^10.0.0",
+    "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
-    "@eslint/eslintrc": "^3"
+    "postcss": "^8.5.4",
+    "prisma": "^6.8.2",
+    "tailwind-scrollbar": "^3.1.0",
+    "tailwindcss": "^3.4.1",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "prisma": {
+    "schema": "src/lib/prisma/schema.prisma"
   }
 }

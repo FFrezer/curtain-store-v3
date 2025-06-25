@@ -1,103 +1,146 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import ProductCard from "@/components/ProductCard";
+import Spinner from "@/components/Spinner";
+import type { Product } from "@/types/product";
+import Link from "next/link";
 import Image from "next/image";
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch(`/api/products?page=1&pageSize=8`);
+        if (!res.ok) throw new Error(`API Error: ${res.status}`);
+        const data = await res.json();
+        setProducts(Array.isArray(data) ? data : data.products ?? []);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  const rooms = [
+    { name: "Living Room", key: "living", image: "/images/livingroom.jpg" },
+    { name: "Bed Room", key: "bed", image: "/images/bedroom.jpg" },
+    { name: "Kids Room", key: "kids", image: "/images/kidsroom.jpg" },
+    { name: "Office", key: "office", image: "/images/officeroom.jpg" },
+  ];
+
+  return (
+    <>
+      <main className="flex flex-col w-full overflow-y-auto bg-[#f9f6f1] text-[#3d3934]">
+        {/* Hero Section */}
+        <section className="w-scrren px-0 py-0 flex justify-center items-center">
+          <div className="relative max-0 w-screen rounded-lg overflow-hidden shadow-sm">
+            <img
+              src="/blackout.png"
+              alt="Curtains"
+              className="w-screen h-[320px] object-cover rounded-lg"
             />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+            <div className="absolute inset-0 flex items-center bg-black/30">
+              <div className="text-white px-10 md:w-1/2">
+                <h1 className="text-3xl md:text-4xl font-serif font-semibold leading-snug mb-6">
+                  Transform Your Space<br />
+                  with the Perfect<br />
+                  Curtains
+                </h1>
+                <div className="flex flex-wrap gap-4">
+                  <Link href="/shop">
+                    <button className="px-6 py-3 border border-white text-white rounded-full hover:bg-white hover:text-black transition">
+                      Shop Now
+                    </button>
+                  </Link>
+                  <Link href="/contact">
+                    <button className="px-6 py-3 bg-white text-black rounded-full hover:bg-gray-200 transition">
+                      Get Consultation
+                    </button>
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Shop by Room */}
+        <section className="w-full px-6 py-1">
+          <h2 className="text-2xl font-serif font-semibold text-center mb-5">Shop by Room</h2>
+          <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-6">
+            {rooms.map((room) => (
+              <Link key={room.key} href={`/shop?room=${room.key}`}>
+                <div className="cursor-pointer rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
+                  <img src={room.image} alt={room.name} className="w-full h-[200px] object-cover" />
+                  <div className="text-center py-1 font-medium">{room.name}</div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* Services Section */}
+        <section className="w-full px-6 py-1">
+          <h2 className="text-2xl font-bold text-center mb-5">Our Services</h2>
+          <div className="grid gap-8 md:grid-cols-3 max-w-6xl mx-auto">
+            <div className="p-6 border rounded-2xl shadow hover:shadow-lg transition text-center">
+              <div className="text-4xl mb-4">🧑💼</div>
+              <h3 className="text-xl font-semibold mb-2">Custom Consultation</h3>
+              <p className="text-gray-700">
+                Personalized advice for your window treatment needs from our experienced team.
+              </p>
+            </div>
+            <div className="p-6 border rounded-2xl shadow hover:shadow-lg transition text-center">
+              <div className="text-4xl mb-4">🔧</div>
+              <h3 className="text-xl font-semibold mb-2">Curtain Installation</h3>
+              <p className="text-gray-700">
+                Professional installation to ensure a flawless and secure fit.
+              </p>
+            </div>
+            <div className="p-6 border rounded-2xl shadow hover:shadow-lg transition text-center">
+              <div className="text-4xl mb-4">🧵</div>
+              <h3 className="text-xl font-semibold mb-2">Fabric Matching</h3>
+              <p className="text-gray-700">
+                Expert help selecting the perfect fabric to suit your space and style.
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Featured Products */}
+       <section className="w-full px-6 py-1">
+  <h2 className="text-2xl font-serif font-semibold text-center mb-5">
+    Featured Products
+  </h2>
+
+  {loading ? (
+    <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-1">
+      <Spinner />
     </div>
+  ) : (
+    <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-1">
+      {products
+        .filter((product) => product.featured) // ✅ correct property name
+        .slice(0, 4)
+        .map((product) => (
+          <div key={product.id} className="p-2">
+            <Link href={`/shop/${product.id}`} className="block">
+              <ProductCard product={product} />
+            </Link>
+          </div>
+        ))}
+    </div>
+  )}
+</section>
+
+
+      </main>
+    </>
   );
 }
