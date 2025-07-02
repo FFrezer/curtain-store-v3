@@ -1,6 +1,8 @@
 // app/admin/products/[id]/edit/submit/route.ts
-import { db } from "@/lib/prisma/db";
+import db  from "@/lib/prisma/db";
 import { redirect } from "next/navigation";
+import { Branch } from "@prisma/client"; // ✅ Import the enum
+
 
 export async function POST(req: Request) {
   const formData = await req.formData();
@@ -16,7 +18,7 @@ export async function POST(req: Request) {
     data: {
       name,
       price,
-      branch,
+      branch: branch as Branch, 
       room,
       category,
     },

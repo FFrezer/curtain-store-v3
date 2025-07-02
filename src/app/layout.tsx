@@ -11,6 +11,7 @@ import { SessionProvider } from 'next-auth/react';
 import { Providers } from './providers';
 
 
+
 const playfair = Playfair_Display({
   subsets: ['latin'],
   weight: ['400', '700'],
@@ -32,10 +33,12 @@ export default function RootLayout({ children }: { children: ReactNode }) {
     <html lang="en">
       <body>
         <Providers>
+          <CartProvider>
           <Navbar />
           <main className="min-h-screen bg-cream p-4">{children}</main>
-          <Toaster position="top-right" reverseOrder={false} />
+          <Toaster position="top-right"  />
           <Footer />
+          </CartProvider>
         </Providers>
       </body>
     </html>

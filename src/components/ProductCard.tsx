@@ -1,71 +1,34 @@
-import { Product, Image as ProductImage } from "@prisma/client";
-import { useEffect, useState } from "react";
-import toast from "react-hot-toast";
+// components/ProductCard.tsx
+'use client'
 import Image from "next/image";
-import ProductDetail from "./ProductDetail";
+import { Prisma } from "@prisma/client";
+import { useCart } from "@/context/CartContext";
 
-interface ProductWithExtras extends Product {
-  images: ProductImage[]; // images array required
-}
-
-interface ProductCardProps {
-  product: ProductWithExtras;
-}
-
-export default function ProductCard({ product }: ProductCardProps) {
-  const [cartItems, setCartItems] = useState<any[]>([]);
-
-  useEffect(() => {
-    const cartData = localStorage.getItem("cart");
-    if (cartData) {
-      setCartItems(JSON.parse(cartData));
-    }
-  }, []);
-
-  const handleAddToCart = () => {
-    const cart = [...cartItems];
-    const existingItemIndex = cart.findIndex((item) => item.id === product.id);
-
-    if (existingItemIndex !== -1) {
-      cart[existingItemIndex].quantity += 1;
-      toast.success(`Increased quantity of ${product.name}`);
-    } else {
-      cart.push({
-        id: product.id,
-        name: product.name,
-        price: product.price,
-        image: product.images?.[0]?.url ?? "/placeholder.jpg",
-        quantity: 1,
-      });
-      toast.success(`${product.name} added to cart`);
-    }
-
-    localStorage.setItem("cart", JSON.stringify(cart));
-    setCartItems(cart);
-    window.dispatchEvent(new Event("storage"));
+type ProductWithImages = Prisma.ProductGetPayload<{
+ where: { featured: true }, 
+  include: {
+    images: true,
+    variants: true,
   };
+}>;
 
-  // Choose first image or fallback placeholder
-  const previewImage = product.images?.[0]?.url ?? "/placeholder.jpg";
-
+export default function ProductCard({ product }: { product: ProductWithImages }) 
+{
   return (
-    <div className="border rounded-lg shadow-sm p-4 bg-white">
-      <Image
-        src={previewImage}
-        alt={product.name}
-        width={400}
-        height={300}
-        className="object-cover w-full h-60 rounded"
-      />
-      <div className="mt-3">
-        <h2 className="text-lg font-semibold">{product.name}</h2>
-        <p className="text-gray-700">ETB {product.price}</p>
-        <button
-          onClick={handleAddToCart}
-          className="mt-3 px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition"
-        >
-          Add to Cart
-        </button>
+    <div className="w-full max-w-md mx-auto">
+  <div className="relative aspect-[4/3] w-full rounded-lg overflow-hidden">
+    <Image
+      src={product.image || product.images?.[0]?.url || "/placeholder.jpg"}
+      alt={product.name}
+      fill
+      sizes="(max-width:768px) 100vw,
+             (max-width:1024px) 50vw,
+             33vw"
+      className="object-cover"
+      priority
+    />
+      <h2 className="text-lg font-semibold">{product.name}</h2>
+      <p className="text-sm text-gray-600">{product.category}</p>
       </div>
     </div>
   );

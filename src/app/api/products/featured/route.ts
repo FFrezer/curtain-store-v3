@@ -8,7 +8,10 @@ export async function GET() {
     const products: ProductWithExtras[] = await db.product.findMany({
       where: { featured: true },
       orderBy: { createdAt: 'desc' },
-      include: { images: true },
+      include: { images: true,
+                variants: true,},
+
+      
     });
 
     // You can decide if you want to return full products with images, or a transformed lighter version

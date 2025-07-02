@@ -1,5 +1,5 @@
 import db from "@/lib/prisma/db";
-import ProductCard from "@/components/ProductCard";
+import ProductCard from "@/components/AdminProductCard";
 import { notFound } from "next/navigation";
 
 interface RoomPageProps {

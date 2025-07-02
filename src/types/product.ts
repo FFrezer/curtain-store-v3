@@ -1,6 +1,7 @@
 // src/types/product.ts
-import type { Product, ProductImage } from '@prisma/client';
+import type { Product, ProductImage, Variant } from '@prisma/client';
 
+export type { Product, ProductImage };
 export type TransformedProduct = {
   id: string;
   name: string;
@@ -13,4 +14,6 @@ export type TransformedProduct = {
 
 export type ProductWithExtras = Product & {
   images: ProductImage[];
+  variants: Variant[];
+   
 };

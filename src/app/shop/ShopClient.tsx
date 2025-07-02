@@ -1,13 +1,15 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Product } from "@prisma/client";
+import { Product, ProductImage, Variant } from "@prisma/client";
 import ProductCard from "@/components/ProductCard";
 
+
+type ProductWithImages = Product & { images: ProductImage[]; variants: Variant[]; };
 export default function ShopClient() {
   const [search, setSearch] = useState("");
-  const [products, setProducts] = useState<Product[]>([]);
-  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
+ const [products, setProducts] = useState<ProductWithImages[]>([]);
+ const [filteredProducts, setFilteredProducts] = useState<ProductWithImages[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
 

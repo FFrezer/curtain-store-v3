@@ -3,21 +3,40 @@
 import { useState, useEffect } from "react";
 import ProductCard from "@/components/ProductCard";
 import Spinner from "@/components/Spinner";
-import type { Product } from "@/types/product";
+import type { ProductWithExtras } from "@/types/product";
 import Link from "next/link";
 import Image from "next/image";
 
+const images = ["/livingroom.png", "/store.png", "/blackout.png"];
+
 export default function Home() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ProductWithExtras[]>([]);
   const [loading, setLoading] = useState(true);
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setIndex((prev) => (prev + 1) % images.length);
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const res = await fetch(`/api/products?page=1&pageSize=8`);
         if (!res.ok) throw new Error(`API Error: ${res.status}`);
+
         const data = await res.json();
-        setProducts(Array.isArray(data) ? data : data.products ?? []);
+        console.log("Fetched products:", data);
+
+        if (Array.isArray(data)) {
+          setProducts(data);
+        } else if (Array.isArray(data.products)) {
+          setProducts(data.products);
+        } else {
+          setProducts([]);
+        }
       } catch (error) {
         console.error("Error fetching products:", error);
       } finally {
@@ -35,40 +54,48 @@ export default function Home() {
     { name: "Office", key: "office", image: "/images/officeroom.jpg" },
   ];
 
+
   return (
     <>
       <main className="flex flex-col w-full overflow-y-auto bg-[#f9f6f1] text-[#3d3934]">
         {/* Hero Section */}
-        <section className="w-scrren px-0 py-0 flex justify-center items-center">
-          <div className="relative max-0 w-screen rounded-lg overflow-hidden shadow-sm">
-            <img
-              src="/blackout.png"
-              alt="Curtains"
-              className="w-screen h-[320px] object-cover rounded-lg"
-            />
-            <div className="absolute inset-0 flex items-center bg-black/30">
-              <div className="text-white px-10 md:w-1/2">
-                <h1 className="text-3xl md:text-4xl font-serif font-semibold leading-snug mb-6">
-                  Transform Your Space<br />
-                  with the Perfect<br />
-                  Curtains
-                </h1>
-                <div className="flex flex-wrap gap-4">
-                  <Link href="/shop">
-                    <button className="px-6 py-3 border border-white text-white rounded-full hover:bg-white hover:text-black transition">
-                      Shop Now
-                    </button>
-                  </Link>
-                  <Link href="/contact">
-                    <button className="px-6 py-3 bg-white text-black rounded-full hover:bg-gray-200 transition">
-                      Get Consultation
-                    </button>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
+     <section className="w-full px-0 py-0 flex justify-center items-center">
+  <div className="relative w-full h-[350px] md:h-[350px] overflow-hidden">
+    {images.map((img, i) => (
+      <img
+        key={i}
+        src={img}
+        alt={`Slide ${i}`}
+        className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ${
+          index === i ? "opacity-100" : "opacity-0"
+        }`}
+      />
+    ))}
+    <div className="absolute inset-0 flex items-center bg-black/30">
+      <div className="text-white px-10 md:w-1/2">
+        <h1 className="text-3xl md:text-4xl font-serif font-semibold leading-snug mb-6">
+          Transform Your Space<br />
+          with the Perfect<br />
+          Curtains
+        </h1>
+        <div className="flex flex-wrap gap-4">
+          <Link href="/shop">
+            <button className="px-6 py-3 border border-white text-white rounded-full hover:bg-white hover:text-black transition">
+              Shop Now
+            </button>
+          </Link>
+          <Link href="/contact">
+            <button className="px-6 py-3 bg-white text-black rounded-full hover:bg-gray-200 transition">
+              Get Consultation
+            </button>
+          </Link>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
 
         {/* Shop by Room */}
         <section className="w-full px-6 py-1">
@@ -114,31 +141,30 @@ export default function Home() {
         </section>
 
         {/* Featured Products */}
-       <section className="w-full px-6 py-1">
-  <h2 className="text-2xl font-serif font-semibold text-center mb-5">
-    Featured Products
-  </h2>
+        <section className="w-full px-6 py-1">
+          <h2 className="text-2xl font-serif font-semibold text-center mb-3">
+            Featured Products
+          </h2>
 
-  {loading ? (
-    <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-1">
-      <Spinner />
-    </div>
-  ) : (
-    <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-1">
-      {products
-        .filter((product) => product.featured) // ✅ correct property name
-        .slice(0, 4)
-        .map((product) => (
-          <div key={product.id} className="p-2">
-            <Link href={`/shop/${product.id}`} className="block">
-              <ProductCard product={product} />
-            </Link>
-          </div>
-        ))}
-    </div>
-  )}
-</section>
-
+          {loading ? (
+            <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-1">
+              <Spinner />
+            </div>
+          ) : (
+            <div className="max-w-6xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-1">
+              {products
+                .filter((product) => product.featured) // product.featured must exist on ProductWithExtras
+                .slice(0, 4)
+                .map((product) => (
+                  <div key={product.id} className="p-2">
+                    <Link href={`/shop/${product.id}`} className="block">
+                      <ProductCard product={product} />
+                    </Link>
+                  </div>
+                ))}
+            </div>
+          )}
+        </section>
 
       </main>
     </>

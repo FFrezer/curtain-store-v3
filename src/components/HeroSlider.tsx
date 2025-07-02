@@ -38,12 +38,13 @@ export default function HeroSlider({ images, interval = 5000 }: HeroSliderProps)
           )}
         >
           <Image
-            src={image.src}
-            alt={image.alt}
-            layout="fill"
-            objectFit="cover"
+           src={image.src}
+          alt={image.alt}
+            fill
+           className="object-cover"
             priority={index === 0}
-          />
+            />
+
           <div className="absolute inset-0 bg-black/30" />
           <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-4">
             <h1 className="text-4xl md:text-6xl font-bold drop-shadow">Curtains Made Elegant</h1>

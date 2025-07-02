@@ -1,5 +1,5 @@
 // app/api/admin/products/[id]/route.ts
-import { db } from "@/lib/prisma/db";
+import db  from "@/lib/prisma/db";
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 

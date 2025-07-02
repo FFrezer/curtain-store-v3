@@ -68,11 +68,12 @@ export default function ProductDetail({ product }: { product: any }) {
           {/* Image Section */}
           <div className="md:w-1/2">
             <div className="relative aspect-[4/3] w-full rounded-lg overflow-hidden shadow-md border">
-              <Image
-                src={selectedImage}
-                alt={product.name}
-                fill
-                className="object-cover transition duration-300 ease-in-out hover:scale-105"
+             <Image
+              src={selectedImage}
+              alt={product.name}
+              fill
+              sizes="(max-width: 768px) 100vw, 50vw"
+              className="object-cover transition duration-300 ease-in-out hover:scale-105"
               />
             </div>
 

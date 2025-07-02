@@ -1,12 +1,14 @@
 "use client";
+
 import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import toast from "react-hot-toast";
+
 type Product = {
   id: string;
   name: string;
   price: number;
   image: string;
-  quantity?: number;
+  quantity: number;
 };
 
 type CartContextType = {
@@ -15,6 +17,7 @@ type CartContextType = {
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, qty: number) => void;
   clearCart: () => void;
+  total: number; // ✅ added
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -45,24 +48,26 @@ export function CartProvider({ children }: { children: ReactNode }) {
         toast.success("Cart updated in another tab!");
       }
     };
-
     window.addEventListener("storage", handleStorageChange);
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   if (!hasMounted) return null;
 
-  const addToCart = (product: Product) => {
-    setCart((prev) => {
-      const existing = prev.find((item) => item.id === product.id);
-      if (existing) {
-        return prev.map((item) =>
-          item.id === product.id ? { ...item, quantity: (item.quantity || 1) + 1 } : item
-        );
-      }
-      return [...prev, { ...product, quantity: 1 }];
-    });
-  };
+ const addToCart = (product: Product) => {
+  setCart((prev) => {
+    const existing = prev.find((item) => item.id === product.id);
+    if (existing) {
+      toast.success(`${product.name} quantity increased`);
+      return prev.map((item) =>
+        item.id === product.id ? { ...item, quantity: (item.quantity || 1) + 1 } : item
+      );
+    }
+    toast.success(`${product.name} added to cart`);
+    return [...prev, { ...product, quantity: 1 }];
+  });
+};
+
 
   const removeFromCart = (id: string) =>
     setCart((prev) => prev.filter((item) => item.id !== id));
@@ -74,9 +79,22 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const clearCart = () => setCart([]);
 
+  // ✅ Calculate total
+  const total = cart.reduce(
+    (sum, item) => sum + item.price * (item.quantity || 1),
+    0
+  );
+
   return (
     <CartContext.Provider
-      value={{ cart, addToCart, removeFromCart, updateQuantity, clearCart }}
+      value={{
+        cart,
+        addToCart,
+        removeFromCart,
+        updateQuantity,
+        clearCart,
+        total, // ✅ added here
+      }}
     >
       {children}
     </CartContext.Provider>

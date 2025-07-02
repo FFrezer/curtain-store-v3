@@ -1,5 +1,5 @@
 // app/admin/products/[id]/edit/page.tsx
-import { db } from "@/lib/prisma/db";
+import  db  from "@/lib/prisma/db";
 import { notFound, redirect } from "next/navigation";
 
 export default async function EditProductPage({ params }: { params: { id: string } }) {

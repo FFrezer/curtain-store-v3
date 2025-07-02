@@ -31,16 +31,17 @@ export default async function ProductPage({ params }: ProductPageProps) {
     Add to Cart 🛒
      </button>
       <div className="grid grid-cols-2 gap-4">
-        {product.images.map((img: ImageType) => (
-          <NextImage
-            key={img.id}
-            src={img.url}
-            alt={`${product.name} image`}
-            width={160}
-            height={160}
-            className="rounded shadow"
-          />
-        ))}
+       {product.images.map((img) => (
+  <NextImage
+    key={img.id}
+    src={img.url}
+    alt={`${product.name} image`}
+    width={160}
+    height={160}
+    className="rounded shadow"
+  />
+))}
+
       </div>
     </main>
   );

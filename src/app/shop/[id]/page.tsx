@@ -1,22 +1,18 @@
 import { notFound } from "next/navigation";
-import db  from "@/lib/prisma/db";
-import ProductDetail from '@/components/ProductDetail';
-import Image from "next/image";
-
-
+import db from "@/lib/prisma/db";
+import ProductDetail from "@/components/ProductDetail";
 
 interface ProductPageProps {
-  params: { locale: string; id: string };
+  params: { id: string };
 }
 
-export default async function ProductPage({ params }: ProductPageProps) {
-   const id = decodeURIComponent(params.id);
+export default async function ProductPage( props : ProductPageProps) {
+  const { params } = await props;
+  const id = params.id;
+
   const product = await db.product.findUnique({
     where: { id },
-    include: {
-      images: true,
-      
-    }
+    include: { images: true,  variants: true},
   });
 
   if (!product) return notFound();

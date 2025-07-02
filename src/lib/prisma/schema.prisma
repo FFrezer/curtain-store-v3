@@ -10,32 +10,35 @@ datasource db {
 }
 
 model Product {
-  id          String   @id @default(cuid())
+  id          String         @id @default(cuid())
   name        String
   description String?
   price       Float?
   branch      Branch
   room        String
   category    String
-  featured    Boolean  @default(false)
+  featured    Boolean        @default(false)
   image       String? // 
-  images      Image[] //
-  isFeatured Boolean @default(false)
-  createdAt   DateTime @default(now())
-  variants  Variant[]
+  isFeatured  Boolean        @default(false)
+  createdAt   DateTime       @default(now())
+  variants    Variant[]
+  images      ProductImage[] 
+  Image       Image[]
+  published   Boolean  @default(true)
 }
 
 model Image {
-  id        String  @id @default(cuid())
+  id        String   @id @default(cuid())
   url       String
-  product   Product @relation(fields: [productId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
   productId String
   createdAt DateTime @default(now())
 }
+
 model Variant {
-  id        String   @id @default(cuid())
+  id        String  @id @default(cuid())
   image     String
-  product   Product  @relation(fields: [productId], references: [id])
+  product   Product @relation(fields: [productId], references: [id])
   productId String
 }
 
@@ -65,18 +68,28 @@ enum Branch {
   PIASSA
   GERJI
 }
+
 model HeroImage {
-  id      String @id @default(cuid())
-  src     String
-  alt     String
+  id        String   @id @default(cuid())
+  src       String
+  alt       String
   createdAt DateTime @default(now())
 }
+
 model HeroBanner {
-  id          Int      @id @default(autoincrement())
-  title       String
-  subtitle    String
-  imageUrl    String
-  buttonText  String?
-  buttonUrl   String?
-  createdAt   DateTime @default(now())
+  id         Int      @id @default(autoincrement())
+  title      String
+  subtitle   String
+  imageUrl   String
+  buttonText String?
+  buttonUrl  String?
+  createdAt  DateTime @default(now())
+}
+
+model ProductImage {
+  id        String  @id @default(cuid())
+  url       String
+  createdAt DateTime @default(now())
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
 }

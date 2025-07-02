@@ -42,12 +42,12 @@ export default function ContactPage() {
       <div className="grid gap-6 md:grid-cols-3">
         <div>
           <h2 className="font-semibold text-lg">Merkato - Addis Ababa</h2>
-          <p>Shopping Center, Shop A213 and B306/307</p>
+          <p>Addis Ababa Market Center | Merkato | አዲስ አበባ የገበያ መአከል | መርካቶ Shop A213 and B306/307</p>
           <p>Tel: 0939 979 708 / 0912 605 602</p>
         </div>
         <div>
           <h2 className="font-semibold text-lg">Piyassa</h2>
-          <p>Piyassa Shopping Center, Shop G03</p>
+          <p>Down Town | Piazza | ዳውን ታውን | ፒያሳ 9.031075328591054, 38.75077497875843Shopping Center, Shop G03</p>
           <p>Tel: 0960 231 547 / 0930 405 766</p>
         </div>
         <div>

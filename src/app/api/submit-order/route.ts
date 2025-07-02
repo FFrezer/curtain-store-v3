@@ -1,5 +1,5 @@
 // src/app/api/submit-order/route.ts
-import { db } from "@/lib/prisma/db";
+import db  from "@/lib/prisma/db";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {

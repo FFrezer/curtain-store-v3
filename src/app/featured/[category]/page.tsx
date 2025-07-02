@@ -21,9 +21,8 @@ export default async function FeaturedCategory({
 
   return (
     <div className="max-w-6xl mx-auto p-4 select-none">
-      <h1 className="text-3xl font-bold mb-4 text-center">{product.name}</h1>
+      <h1 className="text-2xl font-bold mb-4 text-center">{product.name}</h1>
       <p className="text-gray-600 mb-6 text-center">{product.description}</p>
-
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {(product.images.length > 0 ? product.images : [{ id: "placeholder", url: "/placeholder.jpg" }]).map((img) => (
           <div

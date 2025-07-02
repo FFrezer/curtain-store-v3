@@ -1,10 +1,14 @@
-// app/admin/products/ProductCard.tsx
 'use client'
 
 import Image from "next/image";
 import Link from "next/link";
 
-export default function ProductCard({ product }: { product: any }) {
+interface ProductCardProps {
+  product: any; // Replace `any` with your Product type if available
+  onEdit?: () => void; // Optional prop
+}
+
+export default function ProductCard({ product, onEdit }: ProductCardProps) {
   const handleDelete = async () => {
     const confirmed = confirm("Are you sure you want to delete this product?");
     if (!confirmed) return;
@@ -24,7 +28,7 @@ export default function ProductCard({ product }: { product: any }) {
     <div className="border rounded-xl p-4 shadow-md relative">
       <div className="absolute top-2 right-2 space-x-2">
         <Link
-          href={`/admin/products/${product.id}/edit`}
+          href={`/admin/products/edit/${product.id}`}
           className="text-blue-600 text-sm hover:underline"
         >
           ✏️ Edit

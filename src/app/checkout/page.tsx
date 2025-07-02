@@ -1,124 +1,186 @@
 "use client";
-import { useCart } from "@/context/CartContext";
-import { useState } from "react";
 
+import { useCart } from "@/context/CartContext";
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { useCartStore } from "@/store/cartStore";
+
+const branchPhoneMap: Record<string, string> = {
+  MERKATO: "251939979708",
+  PIASSA: "251960231547",
+  GERJI: "251940707077",
+};
 
 export default function CheckoutPage() {
-  const { cart, clearCart } = useCart();
-  const [form, setForm] = useState({ name: "", email: "", address: "" });
-  const [submitted, setSubmitted] = useState(false);
+  const { setOrder } = useCartStore();
+  const router = useRouter();
+  const { cart, total, clearCart } = useCart();
 
-  const total = cart.reduce((sum, item) => sum + item.price * (item.quantity || 1), 0);
-  console.log("🧺 Cart at checkout:", cart);
-console.log("💵 Total:", total);
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    address: "",
+    branch: "",
+    images: [""],
+  });
 
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
-const handleSubmit = async (e: React.FormEvent) => {
+  const handleChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
+  ) => {
+    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
+
+  const handleImageChange = (index: number, value: string) => {
+    const newImages = [...form.images];
+    newImages[index] = value;
+    setForm((prev) => ({ ...prev, images: newImages }));
+  };
+
+  const removeImage = (index: number) => {
+    if (form.images.length <= 1) return;
+    const newImages = form.images.filter((_, i) => i !== index);
+    setForm((prev) => ({ ...prev, images: newImages }));
+  };
+
+  const addImage = () => {
+    setForm((prev) => ({ ...prev, images: [...prev.images, ""] }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
   e.preventDefault();
 
-  if (cart.length === 0 || total <= 0) {
-    alert("🛒 Your cart is empty.");
+  const { name, email, address, branch, images } = form;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  if (!name || !email || !address || !branch || !branchPhoneMap[branch]) {
+    toast.error("❗ Please fill in all fields and select a valid branch.");
     return;
   }
 
-  try {
-    const res = await fetch("/api/submit-order", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ ...form, cart, total }),
-    });
-
-    const data = await res.json();
-
-    if (!res.ok) {
-      alert(`❌ Error: ${data.error || "Something went wrong"}`);
-      return;
-    }
-
-    clearCart();
-    setSubmitted(true);
-  } catch (err) {
-    alert("❌ Network error. Please try again.");
-    console.error("Submit failed:", err);
+  if (!emailRegex.test(email)) {
+    toast.error("📧 Please enter a valid email address.");
+    return;
   }
-};
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  if (cart.length === 0 || total <= 0) {
+    toast.error("🛒 Your cart is empty.");
+    return;
+  }
+
+  // Flattened orderData to match Order type interface
+  const orderData = {
+    name,
+    phone: branchPhoneMap[branch],
+    address,
+    delivery: branch,
+    items: cart,
+    total,
+    createdAt: new Date().toISOString(),
+    images,
+    email,
   };
 
-  return (
-    <div>
-      
-      <main className="max-w-4xl mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6">Checkout</h1>
+  setOrder(orderData);
 
-        {submitted ? (
-          <div className="text-green-600 font-semibold">
-            ✅ Thank you, {form.name}! Your order has been received.
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block font-semibold">Name</label>
+  toast.success("✅ Order submitted!");
+  clearCart();
+
+  router.push("/shop");
+};
+
+
+  return (
+    <div className="max-w-xl mx-auto px-2 py-2">
+      <h1 className="text-2xl font-bold mb-2">🧾 Checkout</h1>
+
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <input
+          type="text"
+          name="name"
+          placeholder="Full Name"
+          value={form.name}
+          onChange={handleChange}
+          className="w-full px-4 py-2 border rounded"
+        />
+
+        <input
+          type="email"
+          name="email"
+          placeholder="Email Address"
+          value={form.email}
+          onChange={handleChange}
+          className="w-full px-4 py-2 border rounded"
+        />
+
+        <textarea
+          name="address"
+          placeholder="Delivery Address"
+          value={form.address}
+          onChange={handleChange}
+          rows={4}
+          className="w-full px-4 py-2 border rounded resize-none"
+        />
+
+        <select
+          name="branch"
+          value={form.branch}
+          onChange={handleChange}
+          className="w-full px-4 py-2 border rounded"
+        >
+          <option value="">Select Branch</option>
+          {Object.keys(branchPhoneMap).map((branch) => (
+            <option key={branch} value={branch}>
+              {branch}
+            </option>
+          ))}
+        </select>
+
+        <div className="space-y-2">
+          <label className="font-medium">📸 Optional Image URLs</label>
+          {form.images.map((url, index) => (
+            <div key={index} className="flex gap-2 items-center">
               <input
                 type="text"
-                name="name"
-                required
-                className="w-full border px-3 py-2 rounded"
-                value={form.name}
-                onChange={handleChange}
+                placeholder="https://example.com/image.jpg"
+                value={url}
+                onChange={(e) => handleImageChange(index, e.target.value)}
+                className="w-full px-3 py-2 border rounded"
               />
+              {form.images.length > 1 && (
+                <button
+                  type="button"
+                  onClick={() => removeImage(index)}
+                  className="text-red-500 hover:underline"
+                >
+                  ✖
+                </button>
+              )}
             </div>
-            <div>
-              <label className="block font-semibold">Email</label>
-              <input
-                type="email"
-                name="email"
-                required
-                className="w-full border px-3 py-2 rounded"
-                value={form.email}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label className="block font-semibold">Shipping Address</label>
-              <textarea
-                name="address"
-                required
-                className="w-full border px-3 py-2 rounded"
-                rows={3}
-                value={form.address}
-                onChange={handleChange}
-              />
-            </div>
+          ))}
 
-            <h2 className="text-xl font-bold mt-6">🧾 Order Summary</h2>
-            <ul className="border rounded p-4 space-y-2">
-              {cart.map((item) => (
-                <li key={item.id} className="flex justify-between">
-                  <span>
-                    {item.name} x {item.quantity}
-                  </span>
-                  <span>${(item.price * (item.quantity || 1)).toFixed(2)}</span>
-                </li>
-              ))}
-              <li className="font-bold flex justify-between pt-2 border-t">
-                <span>Total:</span>
-                <span>${total.toFixed(2)}</span>
-              </li>
-            </ul>
+          <button
+            type="button"
+            onClick={addImage}
+            className="text-blue-600 text-sm hover:underline"
+          >
+            ➕ Add Another Image
+          </button>
+        </div>
 
-            <button
-              type="submit"
-              className="mt-4 bg-black text-white px-6 py-2 rounded hover:bg-gray-800"
-            >
-              Place Order
-            </button>
-          </form>
-        )}
-      </main>
-      
+        <button
+          type="submit"
+          className="w-full bg-black text-white py-2 rounded hover:bg-gray-800 transition"
+        >
+          📨 Submit Order
+        </button>
+      </form>
     </div>
   );
 }

@@ -21,13 +21,14 @@ export async function GET(req: NextRequest) {
       where: filters,
       include: {
         images: true,
+         variants: true,
       },
       orderBy: { createdAt: 'desc' },
       skip: (page - 1) * pageSize,
       take: pageSize,
     });
 
- const transformed = products.map((product) => ({
+const transformed = products.map((product) => ({
   id: product.id,
   name: product.name,
   description: product.description ?? "",
@@ -37,7 +38,17 @@ export async function GET(req: NextRequest) {
   branch: product.branch,
   featured: product.featured,
   createdAt: product.createdAt,
-  images: product.images.map((img) => ({ url: img.url })), // ✅ match ProductCard props
+  images: product.images.map((img) => ({
+    id: img.id,
+    url: img.url,
+    productId: img.productId,
+    createdAt: img.createdAt,
+  })),
+  variants: product.variants.map((variant) => ({
+    id: variant.id,
+    image: variant.image,
+    productId: variant.productId,
+  })),
 }));
 
 
