@@ -1,14 +1,14 @@
 // src/components/EditProductForm.tsx
 'use client';
-
+import type { ProductWithExtras } from '@/types/product';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
-export default function EditProductForm({ product }: { product: any }) {
+export default function EditProductForm({ product }: { product: ProductWithExtras}) {
   const router = useRouter();
   const [name, setName] = useState(product.name);
   const [price, setPrice] = useState(product.price);
-
+  const [loading, setLoading] = useState(false);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -40,12 +40,12 @@ export default function EditProductForm({ product }: { product: any }) {
       <div>
         <label className="block mb-1">Price</label>
         <input
-          className="border px-3 py-2 w-full rounded"
-          type="number"
-          value={price}
+           className="border px-3 py-2 w-full rounded"
+           type="number"
+           value={price ?? 0}
           onChange={(e) => setPrice(parseFloat(e.target.value))}
-          required
-        />
+           />
+
       </div>
 
       <button

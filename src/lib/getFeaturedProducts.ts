@@ -1,5 +1,5 @@
 // src/lib/getFeaturedProducts.ts
-import { db } from "@/lib/prisma/db";
+import  db  from "@/lib/prisma/db";
 
 export async function getFeaturedProducts() {
   return await db.product.findMany({

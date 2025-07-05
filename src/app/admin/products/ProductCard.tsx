@@ -1,10 +1,11 @@
 'use client'
 
+import { ProductWithExtras } from "@/types/product";
 import Image from "next/image";
 import Link from "next/link";
 
 interface ProductCardProps {
-  product: any; // Replace `any` with your Product type if available
+  product: ProductWithExtras; // Replace `any` with your Product type if available
   onEdit?: () => void; // Optional prop
 }
 
@@ -48,7 +49,7 @@ export default function ProductCard({ product, onEdit }: ProductCardProps) {
       <p className="text-sm text-gray-500 mb-2">📁 Category: {product.category}</p>
 
       <div className="flex gap-2 overflow-x-auto">
-        {product.images.map((img: any) => (
+        {product.images.map((img) => (
           <Image
             key={img.id}
             src={img.url}

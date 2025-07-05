@@ -10,7 +10,14 @@ export type TransformedProduct = {
   category: string;
   room?: string;
   featured?: boolean;
-  images: { url: string }[];
+  image?: string;
+  createdAt: Date;
+  published: boolean;
+  description: string | null;
+    images?: ProductImage[];
+  
+
+
 };
 
 export type ProductWithExtras = Product & {

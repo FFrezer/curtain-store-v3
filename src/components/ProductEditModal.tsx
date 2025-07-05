@@ -2,8 +2,29 @@
 'use client';
 
 import { useState } from 'react';
+import { ProductWithExtras } from '@/types/ProductWithExtras';
 
-export default function ProductEditModal({ product, onClose, onUpdated }: any) {
+
+// Define the shape of a product
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+}
+
+// Define props for the modal
+interface ProductEditModalProps {
+  product: ProductWithExtras;
+  onClose: () => void;
+  onUpdated: (updatedProduct: ProductWithExtras) => void;
+}
+
+
+export default function ProductEditModal({
+  product,
+  onClose,
+  onUpdated,
+}: ProductEditModalProps) {
   const [name, setName] = useState(product.name);
   const [price, setPrice] = useState(product.price);
 
@@ -17,9 +38,11 @@ export default function ProductEditModal({ product, onClose, onUpdated }: any) {
     });
 
     if (res.ok) {
-      onUpdated(); // refresh list
-      onClose();   // close modal
-    } else {
+  const updatedProduct = await res.json(); // Assuming your API returns the updated product
+  onUpdated(updatedProduct); // ✅ pass the updated product
+  onClose();
+}
+ else {
       alert('Failed to update product');
     }
   };
@@ -45,12 +68,11 @@ export default function ProductEditModal({ product, onClose, onUpdated }: any) {
         <div>
           <label>Price</label>
           <input
-            className="w-full border rounded px-2 py-1"
-            type="number"
-            value={price}
-            onChange={(e) => setPrice(Number(e.target.value))}
-            required
-          />
+  type="number"
+  value={price ?? ""}  // Use empty string if price is null
+  onChange={(e) => setPrice(e.target.value === "" ? null : Number(e.target.value))}
+/>
+
         </div>
 
         <div className="flex justify-end gap-2">

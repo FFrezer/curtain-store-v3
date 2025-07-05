@@ -33,7 +33,7 @@ export default function CartDrawer({ isOpen, onClose }: Props) {
     const parsed = JSON.parse(cartData);
     const normalized = parsed.map((item: any) => ({
       ...item,
-      image: item.image || item.imageUrl || "/placeholder.jpg",
+      image: item.image?.trim() || item.imageUrl || "/placeholder.jpg",
     }));
     setItems(normalized);
   } else {
@@ -89,10 +89,14 @@ export default function CartDrawer({ isOpen, onClose }: Props) {
 
       {/* Drawer */}
       <div
-        className={`fixed right-0 top-0 h-full w-80 bg-white shadow-lg z-50 transform transition-transform duration-300 ${
-          visible ? 'translate-x-0' : 'translate-x-full'
-        }`}
-      >
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="cart-title"
+  className={`fixed right-0 top-0 h-full w-80 bg-white shadow-lg z-50 transform transition-transform duration-300 ${
+    visible ? 'translate-x-0' : 'translate-x-full'
+  }`}
+>
+
         <div className="flex justify-between items-center px-4 py-3 border-b">
           <h2 className="text-lg font-semibold">Your Cart</h2>
           <button onClick={onClose} className="text-gray-500 hover:text-black">✕</button>

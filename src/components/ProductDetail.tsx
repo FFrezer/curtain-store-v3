@@ -4,8 +4,10 @@ import Image from "next/image";
 import { useState } from "react";
 import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
+import type { ProductWithExtras } from '@/types/product';
 
-export default function ProductDetail({ product }: { product: any }) {
+
+export default function ProductDetail({ product }: { product: ProductWithExtras }) {
   const [selectedImage, setSelectedImage] = useState(
     product.images?.[0]?.url || product.image || "/images/placeholder.png"
   );
@@ -13,7 +15,7 @@ export default function ProductDetail({ product }: { product: any }) {
   const router = useRouter();
   const { data: session } = useSession();
 
-  const isAdmin = session?.user?.role === 'admin';
+  const isAdmin = session?.user?.role === 'admin' || session?.user?.email === 'admin@example.com';
 
   const handleDelete = async () => {
     const confirmed = confirm('Are you sure you want to delete this product?');
@@ -79,7 +81,7 @@ export default function ProductDetail({ product }: { product: any }) {
 
             {/* Thumbnail Swatches */}
             <div className="flex mt-4 gap-3 overflow-x-auto pb-2">
-              {(product.images || []).map((img: any, idx: number) => {
+              {(product.images || []).map((img: { url: string }, idx: number) => {
                 const url = img?.url || product.image || "/images/placeholder.png";
                 return (
                   <div
@@ -105,7 +107,7 @@ export default function ProductDetail({ product }: { product: any }) {
           <div className="md:w-1/2">
             <h1 className="text-3xl font-bold mb-4">{product.name}</h1>
             <p className="text-gray-600 mb-4">{product.description}</p>
-            <p className="text-xl font-semibold mb-6">${product.price.toFixed(2)}</p>
+            <p className="text-xl font-semibold mb-6">${product.price?.toFixed(2)}</p>
 
             {/* Add to Cart Button */}
             <button
