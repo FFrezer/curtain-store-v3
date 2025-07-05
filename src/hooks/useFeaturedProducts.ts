@@ -16,8 +16,9 @@ export default function useFeaturedProducts() {
         if (!res.ok) throw new Error('Failed to fetch featured products');
         const data = await res.json();
         setFeaturedProducts(data.products ?? []);
-      } catch (err: any) {
-        setError(err.message || 'Unknown error');
+      } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }

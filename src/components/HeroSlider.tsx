@@ -1,4 +1,3 @@
-// src/components/HeroSlider.tsx
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -13,6 +12,34 @@ interface HeroSliderProps {
 
 export default function HeroSlider({ images, interval = 5000 }: HeroSliderProps) {
   const [current, setCurrent] = useState(0);
+  const [touchStartX, setTouchStartX] = useState<number | null>(null);
+  const [touchEndX, setTouchEndX] = useState<number | null>(null);
+
+  const nextSlide = () => setCurrent((prev) => (prev + 1) % images.length);
+  const prevSlide = () => setCurrent((prev) => (prev - 1 + images.length) % images.length);
+
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setTouchStartX(e.changedTouches[0].clientX);
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    setTouchEndX(e.changedTouches[0].clientX);
+  };
+
+  useEffect(() => {
+    if (touchStartX !== null && touchEndX !== null) {
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) {
+        if (diff > 0) {
+          nextSlide(); // swipe left
+        } else {
+          prevSlide(); // swipe right
+        }
+      }
+      setTouchStartX(null);
+      setTouchEndX(null);
+    }
+  }, [touchStartX, touchEndX]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -21,11 +48,12 @@ export default function HeroSlider({ images, interval = 5000 }: HeroSliderProps)
     return () => clearInterval(timer);
   }, [current, interval]);
 
-  const nextSlide = () => setCurrent((prev) => (prev + 1) % images.length);
-  const prevSlide = () => setCurrent((prev) => (prev - 1 + images.length) % images.length);
-
   return (
-    <div className="relative w-full h-[70vh] overflow-hidden">
+    <div
+      className="relative w-full h-[70vh] overflow-hidden"
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
+    >
       {images.map((image, index) => (
         <div
           key={index}
@@ -38,13 +66,12 @@ export default function HeroSlider({ images, interval = 5000 }: HeroSliderProps)
           )}
         >
           <Image
-           src={image.src}
-          alt={image.alt}
+            src={image.src}
+            alt={image.alt}
             fill
-           className="object-cover"
+            className="object-cover"
             priority={index === 0}
-            />
-
+          />
           <div className="absolute inset-0 bg-black/30" />
           <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center px-4">
             <h1 className="text-4xl md:text-6xl font-bold drop-shadow">Curtains Made Elegant</h1>

@@ -21,7 +21,7 @@ export default function AboutPage() {
             ADE sources premium textiles from the world&apos;s leading fabric nations — <strong>Turkey, China</strong>, and beyond — to bring you a curated selection of elegant, durable, and fashionable curtains and home fabrics.
           </p>
           <p>
-            Whether you're furnishing a cozy home, styling a modern office, or dressing a luxury hotel, our team of experts provides <strong>consultation</strong>, <strong>custom tailoring</strong>, and <strong>professional installation</strong> to meet your vision.
+            Whether you are furnishing a cozy home, styling a modern office, or dressing a luxury hotel, our team of experts provides <strong>consultation</strong>, <strong>custom tailoring</strong>, and <strong>professional installation</strong> to meet your vision.
           </p>
           <p>
             Generations of satisfied customers trust ADE for our craftsmanship, attention to detail, and enduring commitment to style.

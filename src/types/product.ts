@@ -1,4 +1,5 @@
 // src/types/product.ts
+
 import type { Product, ProductImage, Variant } from '@prisma/client';
 
 export type { Product, ProductImage };

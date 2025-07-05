@@ -32,8 +32,9 @@ export default function useProducts({ page, roomFilter, category, search }: UseP
 
         const data = await res.json();
         setProducts(data.products ?? []);
-      } catch (err: any) {
-        setError(err.message || 'Unknown error');
+     } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+        setError(errorMessage);
         setProducts([]);
       } finally {
         setLoading(false);
