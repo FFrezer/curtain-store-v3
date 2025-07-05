@@ -41,10 +41,11 @@ export default function ServicesPage() {
         <h3 className="text-2xl font-semibold mb-6 text-center">What Our Customers Say</h3>
         <div className="space-y-4">
           <blockquote className="italic border-l-4 border-black pl-4">
-            "Excellent service! The team was helpful and my curtains look stunning." – Bethlehem A.
-          </blockquote>
+  &ldquo;Excellent service! The team was helpful and my curtains look stunning.&rdquo; – Bethlehem A.
+</blockquote>
+
           <blockquote className="italic border-l-4 border-black pl-4">
-            "They came to my home, helped me choose styles, and installed everything perfectly." – Dawit M.
+            &ldquo;They came to my home, helped me choose styles, and installed everything perfectly." - Dawit M.
           </blockquote>
         </div>
       </div>

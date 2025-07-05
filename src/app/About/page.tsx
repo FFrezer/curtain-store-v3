@@ -8,17 +8,17 @@ export default function AboutPage() {
       <section className="text-center space-y-4">
         <h1 className="text-4xl font-bold tracking-tight">About ADE Curtain Store</h1>
         <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          With over <strong>40 years of experience</strong>, ADE Curtain Store stands as a cornerstone of excellence in Ethiopia's home décor and textile industry.
-        </p>
+  With over <strong>40 years of experience</strong>, ADE Curtain Store stands as a cornerstone of excellence in Ethiopia&apos;s home décor and textile industry.
+</p>
       </section>
 
       <section className="grid gap-10 md:grid-cols-2 items-center">
         <div className="space-y-4 text-gray-700">
           <p>
-            Since our humble beginnings, we’ve grown into a trusted name known for <strong>uncompromising quality</strong>, <strong>timeless style</strong>, and <strong>exceptional customer care</strong>.
+            Since our humble beginnings, we&apos;ve grown into a trusted name known for <strong>uncompromising quality</strong>, <strong>timeless style</strong>, and <strong>exceptional customer care</strong>.
           </p>
           <p>
-            ADE sources premium textiles from the world’s leading fabric nations — <strong>Turkey, China</strong>, and beyond — to bring you a curated selection of elegant, durable, and fashionable curtains and home fabrics.
+            ADE sources premium textiles from the world&apos;s leading fabric nations — <strong>Turkey, China</strong>, and beyond — to bring you a curated selection of elegant, durable, and fashionable curtains and home fabrics.
           </p>
           <p>
             Whether you're furnishing a cozy home, styling a modern office, or dressing a luxury hotel, our team of experts provides <strong>consultation</strong>, <strong>custom tailoring</strong>, and <strong>professional installation</strong> to meet your vision.
@@ -27,8 +27,8 @@ export default function AboutPage() {
             Generations of satisfied customers trust ADE for our craftsmanship, attention to detail, and enduring commitment to style.
           </p>
           <p className="text-xl italic text-black font-semibold">
-            At ADE, we don’t just hang curtains — we frame the stories of your spaces.
-          </p>
+  At ADE, we don&apos;t just hang curtains — we frame the stories of your spaces.
+</p>
         </div>
 
         <div className="rounded-xl overflow-hidden shadow-lg">

@@ -5,7 +5,7 @@ import { Prisma } from "@prisma/client";
 import { useCart } from "@/context/CartContext";
 
 type ProductWithImages = Prisma.ProductGetPayload<{
- where: { featured: true }, 
+ 
   include: {
     images: true,
     variants: true,
