@@ -1,14 +1,25 @@
 // app/admin/products/[id]/edit/page.tsx
-import  db  from "@/lib/prisma/db";
+import db from "@/lib/prisma/db";
 import { notFound } from "next/navigation";
+import { type Metadata } from "next";
 
+type Props = {
+  params: {
+    id: string;
+  };
+};
 
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const product = await db.product.findUnique({
+    where: { id: params.id },
+  });
 
-export default async function EditProductPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+  return {
+    title: product?.name ?? "Edit Product",
+  };
+}
+
+export default async function EditProductPage({ params }: Props) {
   const product = await db.product.findUnique({
     where: { id: params.id },
   });
@@ -27,28 +38,49 @@ export default async function EditProductPage({
 
         <div>
           <label className="block text-sm font-medium">Name</label>
-          <input name="name" defaultValue={product.name} className="w-full border px-3 py-2 rounded" />
+          <input
+            name="name"
+            defaultValue={product.name}
+            className="w-full border px-3 py-2 rounded"
+          />
         </div>
 
         <div>
           <label className="block text-sm font-medium">Price</label>
-          <input name="price" type="number" step="0.01"
-  defaultValue={product.price !== null ? product.price : ''}
-  className="w-full border px-3 py-2 rounded"/>
+          <input
+            name="price"
+            type="number"
+            step="0.01"
+            defaultValue={product.price ?? ""}
+            className="w-full border px-3 py-2 rounded"
+          />
         </div>
+
         <div>
           <label className="block text-sm font-medium">Branch</label>
-          <input name="branch" defaultValue={product.branch ?? ''} className="w-full border px-3 py-2 rounded" />
+          <input
+            name="branch"
+            defaultValue={product.branch ?? ""}
+            className="w-full border px-3 py-2 rounded"
+          />
         </div>
 
         <div>
           <label className="block text-sm font-medium">Room</label>
-          <input name="room" defaultValue={product.room ?? ''} className="w-full border px-3 py-2 rounded" />
+          <input
+            name="room"
+            defaultValue={product.room ?? ""}
+            className="w-full border px-3 py-2 rounded"
+          />
         </div>
 
         <div>
           <label className="block text-sm font-medium">Category</label>
-          <input name="category" defaultValue={product.category} className="w-full border px-3 py-2 rounded" />
+          <input
+            name="category"
+            defaultValue={product.category ?? ""}
+            className="w-full border px-3 py-2 rounded"
+          />
         </div>
 
         <button
