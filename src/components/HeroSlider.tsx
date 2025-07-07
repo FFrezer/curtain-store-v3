@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import Image from 'next/image';
 import clsx from 'clsx';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -15,8 +15,13 @@ export default function HeroSlider({ images, interval = 5000 }: HeroSliderProps)
   const [touchStartX, setTouchStartX] = useState<number | null>(null);
   const [touchEndX, setTouchEndX] = useState<number | null>(null);
 
-  const nextSlide = () => setCurrent((prev) => (prev + 1) % images.length);
-  const prevSlide = () => setCurrent((prev) => (prev - 1 + images.length) % images.length);
+  const nextSlide = useCallback(() => {
+    setCurrent((prev) => (prev + 1) % images.length);
+  }, [images.length]);
+
+  const prevSlide = useCallback(() => {
+    setCurrent((prev) => (prev - 1 + images.length) % images.length);
+  }, [images.length]);
 
   const handleTouchStart = (e: React.TouchEvent) => {
     setTouchStartX(e.changedTouches[0].clientX);
@@ -30,23 +35,19 @@ export default function HeroSlider({ images, interval = 5000 }: HeroSliderProps)
     if (touchStartX !== null && touchEndX !== null) {
       const diff = touchStartX - touchEndX;
       if (Math.abs(diff) > 50) {
-        if (diff > 0) {
-          nextSlide(); // swipe left
-        } else {
-          prevSlide(); // swipe right
-        }
+        diff > 0 ? nextSlide() : prevSlide();
       }
       setTouchStartX(null);
       setTouchEndX(null);
     }
-  }, [touchStartX, touchEndX]);
+  }, [touchStartX, touchEndX, nextSlide, prevSlide]);
 
   useEffect(() => {
     const timer = setInterval(() => {
       nextSlide();
     }, interval);
     return () => clearInterval(timer);
-  }, [current, interval]);
+  }, [interval, nextSlide]);
 
   return (
     <div
@@ -58,10 +59,10 @@ export default function HeroSlider({ images, interval = 5000 }: HeroSliderProps)
         <div
           key={index}
           className={clsx(
-            "absolute inset-0 transition-opacity duration-1000 ease-in-out",
+            'absolute inset-0 transition-opacity duration-1000 ease-in-out',
             {
-              "opacity-100 z-10": index === current,
-              "opacity-0 z-0": index !== current,
+              'opacity-100 z-10': index === current,
+              'opacity-0 z-0': index !== current,
             }
           )}
         >
@@ -101,8 +102,8 @@ export default function HeroSlider({ images, interval = 5000 }: HeroSliderProps)
             key={idx}
             onClick={() => setCurrent(idx)}
             className={clsx(
-              "w-3 h-3 rounded-full",
-              idx === current ? "bg-white" : "bg-white/50"
+              'w-3 h-3 rounded-full',
+              idx === current ? 'bg-white' : 'bg-white/50'
             )}
           />
         ))}
