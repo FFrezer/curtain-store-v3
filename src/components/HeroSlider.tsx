@@ -31,16 +31,21 @@ export default function HeroSlider({ images, interval = 5000 }: HeroSliderProps)
     setTouchEndX(e.changedTouches[0].clientX);
   };
 
-  useEffect(() => {
-    if (touchStartX !== null && touchEndX !== null) {
-      const diff = touchStartX - touchEndX;
-      if (Math.abs(diff) > 50) {
-        diff > 0 ? nextSlide() : prevSlide();
+ useEffect(() => {
+  if (touchStartX !== null && touchEndX !== null) {
+    const diff = touchStartX - touchEndX;
+    if (Math.abs(diff) > 50) {
+      if (diff > 0) {
+        nextSlide();
+      } else {
+        prevSlide();
       }
-      setTouchStartX(null);
-      setTouchEndX(null);
     }
-  }, [touchStartX, touchEndX, nextSlide, prevSlide]);
+    setTouchStartX(null);
+    setTouchEndX(null);
+  }
+}, [touchStartX, touchEndX, nextSlide, prevSlide]);
+
 
   useEffect(() => {
     const timer = setInterval(() => {
