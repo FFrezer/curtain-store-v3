@@ -54,7 +54,7 @@ export default function AdminProductCard({ product, onEdit }: AdminProductCardPr
       <p className="text-sm text-gray-500 mb-2">📁 Category: {product.category}</p>
 
       <div className="flex gap-2 overflow-x-auto">
-        {product.images.map((img: any) => (
+        {product.images.map((img: { id: string; url: string }) => (
           <Image
             key={img.id}
             src={img.url}

@@ -1,6 +1,13 @@
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
 
+type CartItem = {
+  id: string;
+  name: string;
+  price: number;
+  quantity: number;
+  image?: string; // optional, add if you use it
+};
 export async function POST(req: Request) {
   const data = await req.json();
 
@@ -14,10 +21,12 @@ export async function POST(req: Request) {
 🏠 Address: ${address}
 
 🛒 Items:
-${cartItems.map(
-  (item: any) =>
+${cartItems
+  .map((item: CartItem) =>
     `• ${item.name} x${item.quantity} - Br ${item.price * item.quantity}`
-).join("\n")}
+  )
+  .join("\n")}
+
 
 💰 Total: Br ${total}
 `;

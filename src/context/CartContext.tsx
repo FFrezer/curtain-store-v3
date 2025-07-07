@@ -17,7 +17,8 @@ type CartContextType = {
   removeFromCart: (id: string) => void;
   updateQuantity: (id: string, qty: number) => void;
   clearCart: () => void;
-  total: number; // ✅ added
+  total: number; 
+  hasMounted: boolean;
 };
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
@@ -93,7 +94,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
         removeFromCart,
         updateQuantity,
         clearCart,
-        total, // ✅ added here
+        total, 
+       hasMounted,
       }}
     >
       {children}

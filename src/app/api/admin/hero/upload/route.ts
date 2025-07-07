@@ -13,9 +13,10 @@ export const config = {
 
 export async function POST(req: NextRequest) {
   const form = formidable({ multiples: false });
+   const reqNode = req as unknown as import("http").IncomingMessage;
 
   const [fields, files]: [Fields, Files] = await new Promise((resolve, reject) => {
-    form.parse(req as any, (err, fields, files) => {
+    form.parse(reqNode, (err, fields, files) => {
       if (err) reject(err);
       else resolve([fields, files]);
     });

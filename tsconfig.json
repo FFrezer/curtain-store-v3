@@ -27,7 +27,8 @@
     "**/*.tsx",
     "next-env.d.ts",
     "prisma/seed.ts",
-    ".next/types/**/*.ts"
+    ".next/types/**/*.ts",
+    "types"
   ],
   "exclude": ["node_modules"]
 }

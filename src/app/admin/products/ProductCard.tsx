@@ -5,7 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 
 interface ProductCardProps {
-  product: ProductWithExtras; // Replace `any` with your Product type if available
+  product: ProductWithExtras; 
   onEdit?: () => void; // Optional prop
 }
 

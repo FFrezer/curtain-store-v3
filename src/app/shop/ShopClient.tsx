@@ -21,9 +21,10 @@ export default function ShopClient() {
         const data = await res.json();
         setProducts(data.products);
         setFilteredProducts(data.products);
-      } catch (err: any) {
+      } catch (err) {
+        const error = err instanceof Error ? err.message : "Unknown error";
         console.error(err);
-        setFetchError(err.message);
+        setFetchError(error);
       } finally {
         setLoading(false);
       }

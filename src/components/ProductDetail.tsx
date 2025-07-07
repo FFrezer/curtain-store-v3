@@ -6,6 +6,13 @@ import { useRouter } from 'next/navigation';
 import { useSession } from "next-auth/react";
 import type { ProductWithExtras } from '@/types/product';
 
+type CartItem = {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  quantity: number;
+};
 
 export default function ProductDetail({ product }: { product: ProductWithExtras }) {
   const [selectedImage, setSelectedImage] = useState(
@@ -40,10 +47,10 @@ export default function ProductDetail({ product }: { product: ProductWithExtras 
   };
 
   const handleAddToCart = () => {
-    const existingCart = JSON.parse(localStorage.getItem("cart") || "[]");
+    const existingCart:CartItem[] = JSON.parse(localStorage.getItem("cart") || "[]");
 
     const existingIndex = existingCart.findIndex(
-      (item: any) => item.id === product.id && item.image === selectedImage
+      (item) => item.id === product.id && item.image === selectedImage
     );
 
     if (existingIndex !== -1) {
@@ -52,7 +59,7 @@ export default function ProductDetail({ product }: { product: ProductWithExtras 
       existingCart.push({
         id: product.id,
         name: product.name,
-        price: product.price,
+        price: product.price ?? 0,
         image: selectedImage,
         quantity: 1,
       });

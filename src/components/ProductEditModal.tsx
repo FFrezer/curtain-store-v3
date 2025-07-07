@@ -6,11 +6,6 @@ import { ProductWithExtras } from '@/types/ProductWithExtras';
 
 
 // Define the shape of a product
-interface Product {
-  id: string;
-  name: string;
-  price: number;
-}
 
 // Define props for the modal
 interface ProductEditModalProps {

@@ -1,169 +1,242 @@
-// app/cart/page.tsx
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import Image from 'next/image';
-import jsPDF from "jspdf";
+import jsPDF  from "jspdf";
+import autoTable from "jspdf-autotable";
+import { useCart } from "@/context/CartContext"; // 
+import QRCode from "qrcode";
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState<any[]>([]);
-  const [showModal, setShowModal] = useState(false);
-  const [orderPreview, setOrderPreview] = useState("");
+  const { cart, updateQuantity, removeFromCart, clearCart, total } = useCart();
+
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
     address: "",
-    delivery: "",
   });
 
-  useEffect(() => {
-    const storedCart = JSON.parse(localStorage.getItem("cart") || "[]");
-    setCartItems(storedCart);
-  }, []);
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
 
-  const updateCart = (items: any[]) => {
-    localStorage.setItem("cart", JSON.stringify(items));
-    setCartItems([...items]);
+const generatePDF = async () => {
+  const doc = new jsPDF();
+
+  doc.setFontSize(16);
+  doc.text("ADE Curtain Store Invoice", 20, 10);
+
+  doc.setFontSize(12);
+  doc.text(`Name: ${formData.name}`, 20, 20);
+  doc.text(`Phone: ${formData.phone}`, 20, 28);
+  doc.text(`Address: ${formData.address}`, 20, 36);
+
+  const startY = 46;
+  const cellHeight = 20;
+  const imageSize = 12;
+
+  // Table header
+autoTable(doc, {
+  startY,
+  head: [["Image", "Product", "Price", "Qty", "Total"]],
+  body: [],
+});
+
+let y = (doc as any).lastAutoTable.finalY + 2;
+
+ for (const item of cart) {
+    try {
+      const img = await loadImage(item.image);
+      doc.addImage(img, "JPEG", 22, y + 2, imageSize, imageSize);
+    } catch (err) {
+      console.error("Image load failed", err);
+    }
+
+    doc.text(item.name, 40, y + 6);
+    doc.text(`${item.price} ETB`, 100, y + 6);
+    doc.text(`${item.quantity}`, 130, y + 6);
+    doc.text(`${item.price * item.quantity} ETB`, 150, y + 6);
+
+    y += cellHeight;
+  }
+
+  // Total
+  doc.text(`Total: ${total} ETB`, 20, y + 10);
+
+  // Footer contact
+  const footerY = y + 30;
+  doc.setFontSize(10);
+  doc.text("📍 ADE Curtain Store", 20, footerY);
+  doc.text("📞 +251 911 234 567", 20, footerY + 6);
+  doc.text("🌐 www.adecurtain.com", 20, footerY + 12);
+
+  // QR Code for WhatsApp
+  const whatsappURL = `https://wa.me/251911234567?text=Hello`;
+  const qrDataUrl = await QRCode.toDataURL(whatsappURL);
+  doc.addImage(qrDataUrl, "PNG", 150, footerY, 40, 40);
+
+  // Preview in new tab
+  const blob = doc.output("blob");
+  const url = URL.createObjectURL(blob);
+  window.open(url, "_blank");
+};
+
+// Reuse this image loader
+const loadImage = (url: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+   const img = new window.Image();
+    img.crossOrigin = "Anonymous";
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width;
+      canvas.height = img.height;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return reject("No canvas context");
+      ctx.drawImage(img, 0, 0);
+      resolve(canvas.toDataURL("image/jpeg"));
+    };
+    img.onerror = reject;
+    img.src = url;
+  });
+};
+
+
+  const sendToWhatsApp = () => {
+    if (!formData.name || !formData.phone || !formData.address) {
+      toast.error("Please fill out all fields");
+      return;
+    }
+
+    const order = {
+      ...formData,
+      items: cart,
+      total,
+    };
+
+    const orderText = `
+🧾 New Order:
+👤 Name: ${order.name}
+📞 Phone: ${order.phone}
+📍 Address: ${order.address}
+
+🛒 Items:
+${order.items
+  .map(
+    (item) =>
+      `- ${item.name} x${item.quantity} = ${item.price * item.quantity} ETB`
+  )
+  .join("\n")}
+
+💵 Total: ${order.total} ETB
+`;
+
+    const encoded = encodeURIComponent(orderText);
+    const whatsappURL = `https://wa.me/251911234567?text=${encoded}`; // ← replace number
+
+    generatePDF(); // ✅ Preview first
+    toast.success("Generating invoice & redirecting to WhatsApp...");
+
+    setTimeout(() => {
+      clearCart(); // ✅ empty cart
+      window.open(whatsappURL, "_blank");
+    }, 1000);
   };
 
   const changeQty = (id: string, delta: number) => {
-    const updated = cartItems.map((item) =>
-      item.id === id ? { ...item, quantity: Math.max(1, item.quantity + delta) } : item
-    );
-    updateCart(updated);
-  };
-
-  const removeItem = (id: string) => {
-    const updated = cartItems.filter((item) => item.id !== id);
-    updateCart(updated);
-  };
-
-  const buildOrderText = (order: any) => `
-🧾 *ADE Curtain Store Order*
-
-🗓️ Date: ${new Date().toLocaleString()}
-
-👤 Name: ${order.name}
-📞 Phone: ${order.phone}
-🏠 Address: ${order.address}
-🚚 Delivery Method: ${order.delivery}
-
-🛒 Items:
-${order.items.map((item: any) => `• ${item.name} x${item.quantity} - Br ${item.price * item.quantity}`).join("\n")}
-
-💰 Total: Br ${order.total}
-`;
-
-  const sendToWhatsApp = () => {
-    const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    const order = { ...formData, items: cartItems, total };
-    const text = buildOrderText(order);
-    const encoded = encodeURIComponent(text.trim());
-    const phoneNumber = "+251939979708";
-    window.open(`https://wa.me/${phoneNumber}?text=${encoded}`, "_blank");
-    localStorage.removeItem("cart");
-    setCartItems([]);
-    toast.success(`Thanks ${order.name}, your order was sent to WhatsApp!`);
-    setShowModal(false);
-  };
-
-  const generatePDF = () => {
-    const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    const order = { ...formData, items: cartItems, total };
-    const doc = new jsPDF();
-    doc.text("ADE Curtain Store Order Receipt", 10, 10);
-    doc.text(buildOrderText(order), 10, 20);
-    doc.save("order-receipt.pdf");
-  };
-
-  const handlePreview = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    const name = data.get("name") as string;
-    const phone = data.get("phone") as string;
-    const address = data.get("address") as string;
-    const delivery = data.get("delivery") as string;
-
-    if (!name || !phone || !address || !delivery) return;
-
-    const newFormData = { name, phone, address, delivery };
-    setFormData(newFormData);
-    const total = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    const order = { ...newFormData, items: cartItems, total };
-    setOrderPreview(buildOrderText(order));
-    setShowModal(true);
+    const item = cart.find((item) => item.id === id);
+    if (!item) return;
+    const newQty = Math.max(1, item.quantity + delta);
+    updateQuantity(id, newQty);
   };
 
   return (
-    <div className="min-h-screen flex flex-col px-4 py-8 max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-6">Your Cart</h1>
+    <div className="max-w-4xl mx-auto p-6">
+      <h1 className="text-3xl font-bold mb-6">🛒 Your Cart</h1>
 
-      {cartItems.length === 0 ? (
-        <p className="text-gray-600">Your cart is empty.</p>
+      {cart.length === 0 ? (
+        <p className="text-gray-500">Your cart is empty.</p>
       ) : (
-        <>
-          <div className="space-y-6">
-            {cartItems.map((item) => (
-              <div key={item.id} className="flex items-center justify-between border-b pb-4">
-                <div className="flex items-center space-x-4">
-                  <Image src={item.image || "/placeholder.png"} alt={item.name} width={64} height={64} className="rounded" />
-                  <div>
-                    <p className="font-semibold">{item.name}</p>
-                    <p className="text-sm text-gray-500">Br {item.price}</p>
-                  </div>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <button onClick={() => changeQty(item.id, -1)} className="px-2 py-1 border rounded">−</button>
+        <div className="space-y-6">
+          {cart.map((item) => (
+            <div
+              key={item.id}
+              className="flex items-center border rounded-lg p-4 gap-4"
+            >
+              <Image
+                src={item.image}
+                alt={item.name}
+                width={100}
+                height={100}
+                className="rounded"
+              />
+              <div className="flex-1">
+                <h2 className="text-lg font-semibold">{item.name}</h2>
+                <p>{item.price} ETB</p>
+                <div className="flex items-center gap-2 mt-2">
+                  <button
+                    className="px-2 py-1 bg-gray-200 rounded"
+                    onClick={() => changeQty(item.id, -1)}
+                  >
+                    -
+                  </button>
                   <span>{item.quantity}</span>
-                  <button onClick={() => changeQty(item.id, 1)} className="px-2 py-1 border rounded">+</button>
+                  <button
+                    className="px-2 py-1 bg-gray-200 rounded"
+                    onClick={() => changeQty(item.id, 1)}
+                  >
+                    +
+                  </button>
                 </div>
-                <button onClick={() => removeItem(item.id)} className="text-red-500 hover:underline">Remove</button>
               </div>
-            ))}
+              <button
+                className="text-red-500"
+                onClick={() => removeFromCart(item.id)}
+              >
+                Remove
+              </button>
+            </div>
+          ))}
+
+          <div className="text-right font-bold text-xl">
+            Total: {total} ETB
           </div>
 
-          <form onSubmit={handlePreview} className="mt-8 space-y-4 border-t pt-6">
-            <h2 className="text-xl font-bold">Checkout</h2>
-
-            <input name="name" placeholder="Full Name" required className="w-full border p-2 rounded" />
-            <input name="phone" type="tel" placeholder="Phone Number" required className="w-full border p-2 rounded" />
-            <textarea name="address" placeholder="Delivery Address" required className="w-full border p-2 rounded" />
-            <select name="delivery" required className="w-full border p-2 rounded">
-              <option value="">Select Delivery Method</option>
-              <option value="Pick up">Pick up</option>
-              <option value="Delivery">Delivery</option>
-            </select>
-
-            <p className="text-lg font-semibold">
-              Total: Br {cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}
-            </p>
-
-            <button type="submit" className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 w-full">
-              Preview Order
+          <div className="bg-gray-100 p-4 rounded-md space-y-4">
+            <h2 className="text-xl font-semibold">Checkout Info</h2>
+            <input
+              type="text"
+              name="name"
+              placeholder="Your Name"
+              className="w-full p-2 border rounded"
+              onChange={handleChange}
+            />
+            <input
+              type="text"
+              name="phone"
+              placeholder="Phone Number"
+              className="w-full p-2 border rounded"
+              onChange={handleChange}
+            />
+            <input
+              type="text"
+              name="address"
+              placeholder="Address"
+              className="w-full p-2 border rounded"
+              onChange={handleChange}
+            />
+            <button
+              className="w-full bg-green-600 text-white py-2 rounded"
+              onClick={sendToWhatsApp}
+            >
+              Send Order via WhatsApp
             </button>
-          </form>
-
-          {showModal && (
-            <div className="fixed inset-0 z-50 bg-black bg-opacity-50 flex items-center justify-center px-4">
-              <div className="bg-white p-6 rounded shadow max-w-md w-full">
-                <h3 className="text-xl font-semibold mb-2">Confirm Your Order</h3>
-                <pre className="bg-gray-100 p-4 rounded text-sm overflow-auto max-h-80 whitespace-pre-wrap">{orderPreview}</pre>
-                <div className="flex justify-between mt-4">
-                  <button onClick={() => { sendToWhatsApp(); generatePDF(); }} className="bg-green-600 text-white px-4 py-2 rounded">
-                    Confirm & Send
-                  </button>
-                  <button onClick={() => setShowModal(false)} className="text-gray-500 hover:underline">
-                    Cancel
-                  </button>
-                </div>
-              </div>
-            </div>
-          )}
-        </>
+          </div>
+        </div>
       )}
     </div>
   );
 }
-
-

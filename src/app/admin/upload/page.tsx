@@ -56,7 +56,7 @@ export default function AdminUploadPage() {
       const res = await fetch("/api/admin/upload", {
         method: "POST",
         headers: {
-          "x-admin-secret": process.env.NEXT_PUBLIC_ADMIN_SECRET || "",
+          "x-admin-secret": process.env.ADMIN_SECRET || "",
         },
         body: formData,
       });

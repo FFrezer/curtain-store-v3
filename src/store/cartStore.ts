@@ -14,7 +14,11 @@ type Order = {
   delivery: string;
   items: CartItem[];
   total: number;
+  images: string[];
+  email: string;
+  createdAt: string; // ✅ Add this
 };
+
 
 type CartStore = {
   order: Order | null;
