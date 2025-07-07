@@ -3,10 +3,6 @@ import db from "@/lib/prisma/db";
 import { notFound } from "next/navigation";
 
 
-interface Params {
-  id: string;
-}
-
 interface EditProductPageProps {
   params: {
     id: string;
