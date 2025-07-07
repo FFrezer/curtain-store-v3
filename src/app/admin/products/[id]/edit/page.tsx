@@ -2,12 +2,13 @@
 import db from "@/lib/prisma/db";
 import { notFound } from "next/navigation";
 
-// ✅ Correctly typed props — no external PageProps, no Promise confusion
-interface EditProductPageProps {
-  params: { id: string };
-}
+type Props = {
+  params: {
+    id: string;
+  };
+};
 
-export default async function EditProductPage({ params }: EditProductPageProps) {
+export default async function EditProductPage({ params }: Props) {
   const product = await db.product.findUnique({
     where: { id: params.id },
   });
@@ -23,7 +24,6 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
         className="space-y-4"
       >
         <input name="id" type="hidden" value={product.id} />
-
         <div>
           <label className="block text-sm font-medium">Name</label>
           <input
@@ -32,7 +32,6 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
             className="w-full border px-3 py-2 rounded"
           />
         </div>
-
         <div>
           <label className="block text-sm font-medium">Price</label>
           <input
@@ -43,7 +42,6 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
             className="w-full border px-3 py-2 rounded"
           />
         </div>
-
         <div>
           <label className="block text-sm font-medium">Branch</label>
           <input
@@ -52,7 +50,6 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
             className="w-full border px-3 py-2 rounded"
           />
         </div>
-
         <div>
           <label className="block text-sm font-medium">Room</label>
           <input
@@ -61,7 +58,6 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
             className="w-full border px-3 py-2 rounded"
           />
         </div>
-
         <div>
           <label className="block text-sm font-medium">Category</label>
           <input
@@ -70,7 +66,6 @@ export default async function EditProductPage({ params }: EditProductPageProps) 
             className="w-full border px-3 py-2 rounded"
           />
         </div>
-
         <button
           type="submit"
           className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
