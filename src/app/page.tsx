@@ -5,7 +5,7 @@ import ProductCard from "@/components/ProductCard";
 import Spinner from "@/components/Spinner";
 import type { ProductWithExtras } from "@/types/product";
 import Link from "next/link";
-import Image from 'next/image';
+
 
 const images = ["/livingroom.png", "/store.png", "/blackout.png"];
 
@@ -62,7 +62,7 @@ export default function Home() {
      <section className="w-full px-0 py-0 flex justify-center items-center">
   <div className="relative w-full h-[350px] md:h-[350px] overflow-hidden">
     {images.map((img, i) => (
-      <Image
+      <img
         key={i}
         src={img}
         alt={`Slide ${i}`}
@@ -104,7 +104,7 @@ export default function Home() {
             {rooms.map((room) => (
               <Link key={room.key} href={`/shop?room=${room.key}`}>
                 <div className="cursor-pointer rounded-xl overflow-hidden shadow-sm hover:shadow-md transition">
-                  <Image src={room.image} alt={room.name} className="w-full h-[200px] object-cover" />
+                  <img src={room.image} alt={room.name} className="w-full h-[200px] object-cover" />
                   <div className="text-center py-1 font-medium">{room.name}</div>
                 </div>
               </Link>

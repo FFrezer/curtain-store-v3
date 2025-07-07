@@ -15,7 +15,7 @@ export interface ProductWithExtras extends Product {
 // ✅ Props now expect fully populated product objects
 interface AdminProductListProps {
   session: {
-    user: {
+    user?: {
       name?: string;
       email?: string;
     };
