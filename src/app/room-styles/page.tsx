@@ -2,6 +2,7 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import Image from 'next/image';
 
 const roomStyles = [
   {
@@ -60,7 +61,7 @@ export default function RoomStylesPage() {
           {roomStyles.map((room, idx) => (
             <div key={idx} className="bg-white rounded-xl shadow p-4">
               <Link href={room.href}>
-                <img
+                <Image
                   src={room.image}
                   alt={room.title}
                   className="w-full h-48 object-cover rounded-md hover:opacity-80"

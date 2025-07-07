@@ -5,7 +5,7 @@ export async function generateInvoicePDF(order: OrderType) {
   const pdfDoc = await PDFDocument.create();
   const page = pdfDoc.addPage([600, 800]);
   const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-  const { width, height } = page.getSize();
+  const {  height } = page.getSize();
 
   let y = height - 50;
 

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import toast from "react-hot-toast";
 import jsPDF  from "jspdf";
 import autoTable from "jspdf-autotable";
@@ -46,7 +46,7 @@ autoTable(doc, {
   body: [],
 });
 
-let y = (doc as any).lastAutoTable.finalY + 2;
+let y = doc.lastAutoTable?.finalY ? doc.lastAutoTable.finalY + 2 : startY + 2;
 
  for (const item of cart) {
     try {
@@ -135,7 +135,7 @@ ${order.items
 `;
 
     const encoded = encodeURIComponent(orderText);
-    const whatsappURL = `https://wa.me/251911234567?text=${encoded}`; // ← replace number
+    const whatsappURL = `https://wa.me/251939979708?text=${encoded}`; // ← replace number
 
     generatePDF(); // ✅ Preview first
     toast.success("Generating invoice & redirecting to WhatsApp...");

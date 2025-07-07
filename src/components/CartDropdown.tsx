@@ -2,6 +2,7 @@
 import { useCart } from "@/context/CartContext";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import Image from 'next/image';
 
 export default function CartDropdown() {
   const { cart, total } = useCart();
@@ -22,7 +23,7 @@ export default function CartDropdown() {
       <h2 className="font-semibold text-lg mb-2">🛒 Cart Preview</h2>
       {cart.map((item) => (
         <div key={item.id} className="flex items-center gap-2 mb-2">
-          <img src={item.image} alt={item.name} className="w-10 h-10 object-cover rounded" />
+          <Image src={item.image} alt={item.name} className="w-10 h-10 object-cover rounded" />
           <div className="flex-1">
             <p className="text-sm font-medium">{item.name}</p>
             <p className="text-xs text-gray-500">Qty: {item.quantity}</p>

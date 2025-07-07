@@ -39,14 +39,20 @@ export default function ServicesPage() {
       {/* Testimonials */}
       <div className="bg-gray-50 p-8 rounded-2xl shadow">
         <h3 className="text-2xl font-semibold mb-6 text-center">What Our Customers Say</h3>
-        <div className="space-y-4">
-          <blockquote className="italic border-l-4 border-black pl-4">
-  &ldquo;Excellent service! The team was helpful and my curtains look stunning.&rdquo;  Bethlehem A.
-</blockquote>
+        <div className="space-y-6">
+          <figure>
+            <blockquote className="italic border-l-4 border-black pl-4">
+              &ldquo;Excellent service! The team was helpful and my curtains look stunning.&rdquo;
+            </blockquote>
+            <figcaption className="text-right text-sm font-medium mt-1">— Bethlehem A.</figcaption>
+          </figure>
 
-          <blockquote className="italic border-l-4 border-black pl-4">
-            &ldquo;They came to my home, helped me choose styles, and installed everything perfectly."  Dawit M.
-          </blockquote>
+          <figure>
+            <blockquote className="italic border-l-4 border-black pl-4">
+              &ldquo;They came to my home, helped me choose styles, and installed everything perfectly.&rdquo;
+            </blockquote>
+            <figcaption className="text-right text-sm font-medium mt-1">— Dawit M.</figcaption>
+          </figure>
         </div>
       </div>
 

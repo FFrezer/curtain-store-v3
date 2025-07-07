@@ -101,7 +101,7 @@ export default function CheckoutPage() {
       ]),
     });
 
-    const finalY = (doc as any).lastAutoTable?.finalY || 70;
+    const finalY = doc.lastAutoTable?.finalY || 70;
     doc.text(`Total: ${total} ETB`, 20, finalY + 10);
 
     return doc;

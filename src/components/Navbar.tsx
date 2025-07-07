@@ -7,21 +7,13 @@ import { usePathname } from "next/navigation";
 import CartDrawer from "./CartDrawer";
 import { useCart } from "@/context/CartContext";
 
-type Product = {
-  id: string;
-  name: string;
-  price: number;
-  image: string;
-  quantity: number;
-};
+
 
 
 export default function Navbar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const pathname = usePathname();
   const { cart, hasMounted } = useCart();
-  const { cart: items, updateQuantity, removeFromCart, clearCart, total } = useCart()
-  const handleOpen = () => setIsCartOpen(true)
   const handleClose = () => setIsCartOpen(false)
 
   if (pathname === "/" || pathname === "/en") return null;

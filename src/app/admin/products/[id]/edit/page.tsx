@@ -1,6 +1,6 @@
 // app/admin/products/[id]/edit/page.tsx
 import  db  from "@/lib/prisma/db";
-import { notFound, redirect } from "next/navigation";
+import { notFound } from "next/navigation";
 
 export default async function EditProductPage({ params }: { params: { id: string } }) {
   const product = await db.product.findUnique({
