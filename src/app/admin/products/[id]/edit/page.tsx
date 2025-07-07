@@ -2,7 +2,13 @@
 import  db  from "@/lib/prisma/db";
 import { notFound } from "next/navigation";
 
-export default async function EditProductPage({ params }: { params: { id: string } }) {
+interface EditProductPageProps {
+  params: {
+    id: string;
+  };
+}
+
+export default async function EditProductPage({ params }: EditProductPageProps) {
   const product = await db.product.findUnique({
     where: { id: params.id },
   });
