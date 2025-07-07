@@ -5,7 +5,7 @@ import ProductCard from "@/components/ProductCard";
 import Spinner from "@/components/Spinner";
 import type { ProductWithExtras } from "@/types/product";
 import Link from "next/link";
-import Image from "next/image";
+
 
 const images = ["/livingroom.png", "/store.png", "/blackout.png"];
 

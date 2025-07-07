@@ -9,7 +9,7 @@ interface ProductCardProps {
   onEdit?: () => void; // Optional prop
 }
 
-export default function ProductCard({ product, onEdit }: ProductCardProps) {
+export default function ProductCard({ product}: ProductCardProps) {
   const handleDelete = async () => {
     const confirmed = confirm("Are you sure you want to delete this product?");
     if (!confirmed) return;

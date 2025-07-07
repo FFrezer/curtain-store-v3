@@ -2,7 +2,7 @@
 'use client'
 import Image from "next/image";
 import { Prisma } from "@prisma/client";
-import { useCart } from "@/context/CartContext";
+
 
 type ProductWithImages = Prisma.ProductGetPayload<{
  

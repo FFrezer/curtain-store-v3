@@ -2,12 +2,9 @@ import '@/styles/globals.css';
 import { ReactNode } from 'react';
 import { Playfair_Display, Inter } from 'next/font/google';
 import { CartProvider } from '@/context/CartContext';
-import ConditionalNavbar from '@/components/ConditionalNavbar';
 import Footer from '@/components/Footer';
 import { Toaster } from 'react-hot-toast';
-import { ClientComponentsWrapper } from '@/components/ClientComponentsWrapper';
 import Navbar from '@/components/Navbar';
-import { SessionProvider } from 'next-auth/react'; 
 import { Providers } from './providers';
 
 

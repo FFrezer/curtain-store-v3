@@ -8,7 +8,6 @@ export default function EditProductForm({ product }: { product: ProductWithExtra
   const router = useRouter();
   const [name, setName] = useState(product.name);
   const [price, setPrice] = useState(product.price);
-  const [loading, setLoading] = useState(false);
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 

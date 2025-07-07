@@ -1,7 +1,6 @@
 // app/admin/products/[id]/edit/submit/route.ts
 import db  from "@/lib/prisma/db";
-import { redirect } from "next/navigation";
-import { Branch } from "@prisma/client"; // ✅ Import the enum
+import { Branch } from "@prisma/client";
 
 
 export async function POST(req: Request) {
@@ -23,6 +22,4 @@ export async function POST(req: Request) {
       category,
     },
   });
-
-  redirect("/admin/products");
 }

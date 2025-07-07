@@ -1,7 +1,7 @@
 import db  from "@/lib/prisma/db";
 import NextImage from "next/image"; // Renamed import for clarity
 import { notFound } from "next/navigation";
-import type { Image as ImageType } from "@prisma/client";
+
 
 type ProductPageProps = {
   params: {
