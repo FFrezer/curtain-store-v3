@@ -43,10 +43,9 @@ export default function ServicesPage() {
           <figure>
             <blockquote className="italic border-l-4 border-black pl-4">
               &ldquo;Excellent service! The team was helpful and my curtains look stunning.&rdquo;
-            </blockquote>
             <figcaption className="text-right text-sm font-medium mt-1">— Bethlehem A.</figcaption>
+            </blockquote>
           </figure>
-
           <figure>
             <blockquote className="italic border-l-4 border-black pl-4">
               &ldquo;They came to my home, helped me choose styles, and installed everything perfectly.&rdquo;
