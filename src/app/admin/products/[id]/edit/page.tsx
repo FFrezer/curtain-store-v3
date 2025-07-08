@@ -1,16 +1,21 @@
 import { notFound } from "next/navigation";
 import db from "@/lib/prisma/db";
 
-type Props = { params: { id: string } };
 
-export default async function EditProductPage({ params }: Props) {
+export default async function EditProductPage({
+  params,
+}: {
+  params: { id: string };
+}) {
   const product = await db.product.findUnique({
     where: { id: params.id },
   });
 
   if (!product) {
-    notFound(); // Render 404 if no product found
-  }
+  notFound();
+  return; 
+}
+
 
   return (
     <div className="max-w-xl mx-auto p-6">
