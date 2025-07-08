@@ -1,19 +1,16 @@
-// src/app/admin/products/[id]/edit/page.tsx
-import db from "@/lib/prisma/db";
 import { notFound } from "next/navigation";
+import db from "@/lib/prisma/db";
 
-type PageProps = {
-  params: {
-    id: string;
-  };
-};
+type Props = { params: { id: string } };
 
-export default async function EditProductPage({ params }: PageProps) {
+export default async function EditProductPage({ params }: Props) {
   const product = await db.product.findUnique({
     where: { id: params.id },
   });
 
-  if (!product) return notFound();
+  if (!product) {
+    notFound(); // Render 404 if no product found
+  }
 
   return (
     <div className="max-w-xl mx-auto p-6">
