@@ -1,6 +1,6 @@
+// src/app/admin/products/[id]/edit/page.tsx
 import { notFound } from "next/navigation";
 import db from "@/lib/prisma/db";
-
 
 export default async function EditProductPage({
   params,
@@ -11,17 +11,13 @@ export default async function EditProductPage({
     where: { id: params.id },
   });
 
-  if (!product) {
-  notFound();
-  return; 
-}
-
+  if (!product) return notFound();
 
   return (
     <div className="max-w-xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">✏️ Edit Product</h1>
       <form
-        action={`/admin/products/${product.id}/edit`}
+        action={`/admin/products/${product.id}/edit/submit`}
         method="POST"
         className="space-y-4"
       >
@@ -48,7 +44,7 @@ export default async function EditProductPage({
           <label className="block text-sm font-medium">Branch</label>
           <input
             name="branch"
-            defaultValue={product.branch ?? ""}
+            defaultValue={product.branch}
             className="w-full border px-3 py-2 rounded"
           />
         </div>
@@ -56,7 +52,7 @@ export default async function EditProductPage({
           <label className="block text-sm font-medium">Room</label>
           <input
             name="room"
-            defaultValue={product.room ?? ""}
+            defaultValue={product.room}
             className="w-full border px-3 py-2 rounded"
           />
         </div>
@@ -64,7 +60,7 @@ export default async function EditProductPage({
           <label className="block text-sm font-medium">Category</label>
           <input
             name="category"
-            defaultValue={product.category ?? ""}
+            defaultValue={product.category}
             className="w-full border px-3 py-2 rounded"
           />
         </div>
