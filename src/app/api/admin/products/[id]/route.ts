@@ -1,54 +1,25 @@
-import { NextResponse } from "next/server";
-import { getServerSession } from "next-auth/next";
-import db from "@/lib/prisma/db";
-import { authOptions } from "@/lib/auth";
+import { NextResponse } from 'next/server';
+import  prisma  from '@/lib/prisma/db';
+import type { NextRequest } from 'next/server';
 
-export async function DELETE(
-  req: Request,
+export async function GET(
+  req: NextRequest,
   { params }: { params: { id: string } }
 ) {
-  const session = await getServerSession(authOptions);
-  const isAdmin = session?.user?.role === "admin";
-
-  if (!isAdmin) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
+  const id = params.id;
 
   try {
-    const id = params.id;
-
-    // Optional: check if product exists
-    const product = await db.product.findUnique({ where: { id } });
-    if (!product) {
-      return NextResponse.json({ error: "Product not found" }, { status: 404 });
-    }
-
-    // Delete related images first
-    await db.productImage.deleteMany({
-      where: { productId: id },
-    });
-
-    // Then delete the product
-    await db.product.delete({
+    const product = await prisma.product.findUnique({
       where: { id },
     });
 
-    return new NextResponse(null, { status: 204 }); // No Content
-  } catch (error: unknown) {
-    let message = "Unexpected error";
-    if (error instanceof Error) {
-      message = error.message;
-      console.error("Error deleting product:", message, error);
-    } else {
-      console.error("Unknown error deleting product:", error);
+    if (!product) {
+      return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
 
-    return NextResponse.json(
-      {
-        error: "Failed to delete product",
-        detail: message,
-      },
-      { status: 500 }
-    );
-  }
+    return NextResponse.json(product);
+  } catch (error: unknown) {
+  console.error(error); // log it if needed
+  return NextResponse.json({ error: 'Something went wrong' }, { status: 500 });
+}
 }
