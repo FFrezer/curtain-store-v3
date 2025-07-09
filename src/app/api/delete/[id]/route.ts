@@ -1,22 +1,24 @@
-// src/app/api/admin/products/[id]/route.ts
-
-import { NextResponse, NextRequest } from "next/server";
-import db from "@/lib/prisma/db";
+// src/app/api/delete/[id]/route.ts
+import { NextResponse } from "next/server";
+import prisma from "@/lib/prisma/db"; // adjust this path to your prisma client
 
 export async function DELETE(
-  request: NextRequest,
+  request: Request,
   { params }: { params: { id: string } }
-) {
+): Promise<Response> {
   const { id } = params;
 
   try {
-    await db.product.delete({
+    // Example: delete an entity by id
+    await prisma.product.delete({
       where: { id },
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, message: `Deleted entity ${id}` });
   } catch (error) {
-    console.error("Failed to delete product:", error);
-    return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
+    return NextResponse.json(
+      { success: false, message: "Entity not found or deletion failed" },
+      { status: 404 }
+    );
   }
 }
