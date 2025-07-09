@@ -1,4 +1,3 @@
-// app/components/AdminProductCard.tsx
 'use client';
 
 import Image from "next/image";
@@ -18,14 +17,19 @@ export default function AdminProductCard({ product, onEdit }: AdminProductCardPr
     const confirmed = confirm("Are you sure you want to delete this product?");
     if (!confirmed) return;
 
-    const res = await fetch(`/api/admin/products/${product.id}`, {
-      method: "DELETE",
-    });
+    try {
+      const res = await fetch(`/api/admin/products/${product.id}`, {
+        method: "DELETE",
+      });
 
-    if (res.ok) {
-      window.location.reload();
-    } else {
-      alert("Failed to delete product");
+      if (res.ok) {
+        // Consider better state update rather than full reload:
+        window.location.reload();
+      } else {
+        alert("Failed to delete product");
+      }
+    } catch (err) {
+      alert("Error deleting product");
     }
   };
 
@@ -35,12 +39,14 @@ export default function AdminProductCard({ product, onEdit }: AdminProductCardPr
         <button
           onClick={onEdit}
           className="text-blue-600 text-sm hover:underline"
+          type="button"
         >
           ✏️ Edit
         </button>
         <button
           onClick={handleDelete}
           className="text-red-600 text-sm hover:underline"
+          type="button"
         >
           🗑 Delete
         </button>
@@ -53,11 +59,11 @@ export default function AdminProductCard({ product, onEdit }: AdminProductCardPr
       <p className="text-sm text-gray-500 mb-2">📁 Category: {product.category}</p>
 
       <div className="flex gap-2 overflow-x-auto">
-        {product.images.map((img: { id: string; url: string }) => (
+        {product.images.map((img) => (
           <Image
             key={img.id}
             src={img.url}
-            alt={product.name}
+            alt={`${product.name} image`}
             width={100}
             height={100}
             className="rounded object-cover"

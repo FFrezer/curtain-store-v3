@@ -4,16 +4,11 @@
 import { useState } from 'react';
 import { ProductWithExtras } from '@/types/ProductWithExtras';
 
-
-// Define the shape of a product
-
-// Define props for the modal
 interface ProductEditModalProps {
   product: ProductWithExtras;
   onClose: () => void;
   onUpdated: (updatedProduct: ProductWithExtras) => void;
 }
-
 
 export default function ProductEditModal({
   product,
@@ -21,7 +16,7 @@ export default function ProductEditModal({
   onUpdated,
 }: ProductEditModalProps) {
   const [name, setName] = useState(product.name);
-  const [price, setPrice] = useState(product.price);
+  const [price, setPrice] = useState<number | null>(product.price);
 
   const handleUpdate = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,11 +28,10 @@ export default function ProductEditModal({
     });
 
     if (res.ok) {
-  const updatedProduct = await res.json(); // Assuming your API returns the updated product
-  onUpdated(updatedProduct); // ✅ pass the updated product
-  onClose();
-}
- else {
+      const updatedProduct = await res.json();
+      onUpdated(updatedProduct);
+      onClose();
+    } else {
       alert('Failed to update product');
     }
   };
@@ -51,23 +45,34 @@ export default function ProductEditModal({
         <h2 className="text-xl font-semibold">Edit Product</h2>
 
         <div>
-          <label>Name</label>
+          <label htmlFor="name" className="block mb-1 font-medium">
+            Name
+          </label>
           <input
+            id="name"
             className="w-full border rounded px-2 py-1"
             value={name}
             onChange={(e) => setName(e.target.value)}
             required
+            type="text"
           />
         </div>
 
         <div>
-          <label>Price</label>
+          <label htmlFor="price" className="block mb-1 font-medium">
+            Price
+          </label>
           <input
-  type="number"
-  value={price ?? ""}  // Use empty string if price is null
-  onChange={(e) => setPrice(e.target.value === "" ? null : Number(e.target.value))}
-/>
-
+            id="price"
+            type="number"
+            value={price ?? ""}
+            onChange={(e) =>
+              setPrice(e.target.value === "" ? null : Number(e.target.value))
+            }
+            className="w-full border rounded px-2 py-1"
+            min={0}
+            step={0.01}
+          />
         </div>
 
         <div className="flex justify-end gap-2">
