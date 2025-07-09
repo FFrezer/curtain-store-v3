@@ -28,7 +28,7 @@ export default function AdminProductCard({ product, onEdit }: AdminProductCardPr
       } else {
         alert("Failed to delete product");
       }
-    } catch (err) {
+    } catch  {
       alert("Error deleting product");
     }
   };
