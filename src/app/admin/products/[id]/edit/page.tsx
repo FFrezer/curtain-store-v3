@@ -1,12 +1,27 @@
 // src/app/admin/products/[id]/edit/page.tsx
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import db from "@/lib/prisma/db";
 
-export default async function EditProductPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+interface EditProductPageProps {
+  params: {
+    id: string;
+  };
+}
+
+export async function generateMetadata(
+  { params }: EditProductPageProps
+): Promise<Metadata> {
+  const product = await db.product.findUnique({ where: { id: params.id } });
+
+  return {
+    title: product?.name ? `Edit ${product.name}` : "Edit Product",
+  };
+}
+
+export default async function EditProductPage(
+  { params }: EditProductPageProps
+) {
   const product = await db.product.findUnique({
     where: { id: params.id },
   });

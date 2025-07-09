@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "typeRoots": ["./types", "./node_modules/@types"], 
+    "typeRoots": ["./types", "./node_modules/@types"],
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
@@ -16,12 +16,13 @@
     "forceConsistentCasingInFileNames": true,
     "jsx": "preserve",
     "incremental": true,
+    "types": ["node"],            // <== Add this line
     "plugins": [
       { "name": "next" }
     ],
-    "baseUrl": ".",                     // ✅ ADD THIS
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"]                      // ✅ FIXED: now matches baseUrl
+      "@/*": ["src/*"]
     }
   },
   "include": [
