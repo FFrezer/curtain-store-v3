@@ -1,16 +1,18 @@
-import { getAuthSession } from "@/lib/auth";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/authOptions";
 import { redirect } from "next/navigation";
 
-export default async function AdminDashboard() {
-  const session = await getAuthSession();
+export default async function AdminPage() {
+  const session = await getServerSession(authOptions);
 
-  if (!session || session.user.role !== "admin") {
-    redirect("/login");
+  // ⛔️ If not logged in or not an admin, redirect
+  if (!session?.user || session.user.role !== "admin") {
+    redirect("/unauthorized"); // Or show a 403 page
   }
 
   return (
-    <div className="p-8">
-      <h1 className="text-3xl font-bold">Welcome, Admin 👑</h1>
+    <div className="p-6">
+      <h1 className="text-2xl font-bold">Admin Dashboard</h1>
       {/* Admin content here */}
     </div>
   );
