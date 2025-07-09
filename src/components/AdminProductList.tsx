@@ -5,6 +5,7 @@ import Link from "next/link";
 import AdminProductCard from "@/components/AdminProductCard";
 import ProductEditModal from "@/components/ProductEditModal";
 import { Product, Branch, Image } from "@prisma/client";
+import { Session } from "next-auth";
 
 // ✅ Define the full type that includes relations
 export interface ProductWithExtras extends Product {
@@ -14,12 +15,7 @@ export interface ProductWithExtras extends Product {
 
 // ✅ Props now expect fully populated product objects
 interface AdminProductListProps {
-  session: {
-    user?: {
-      name?: string;
-      email?: string;
-    };
-  };
+  session: Session;
   products: ProductWithExtras[];
 }
 
