@@ -1,16 +1,12 @@
 // src/app/admin/products/[id]/edit/page.tsx
-import type { Metadata } from "next";
+
 import { notFound } from "next/navigation";
 import db from "@/lib/prisma/db";
+import { Metadata } from "next";
 
-interface EditProductPageProps {
-  params: {
-    id: string;
-  };
-}
-
+// ✅ This works perfectly without any type confusion
 export async function generateMetadata(
-  { params }: EditProductPageProps
+  { params }: { params: { id: string } }
 ): Promise<Metadata> {
   const product = await db.product.findUnique({ where: { id: params.id } });
 
@@ -19,15 +15,17 @@ export async function generateMetadata(
   };
 }
 
-export default async function EditProductPage(
-  { params }: EditProductPageProps
-) {
+// ✅ Still use a shared interface here if you like
+interface EditProductPageProps {
+  params: { id: string };
+}
+
+export default async function EditProductPage({ params }: EditProductPageProps) {
   const product = await db.product.findUnique({
     where: { id: params.id },
   });
 
   if (!product) return notFound();
-
   return (
     <div className="max-w-xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">✏️ Edit Product</h1>
