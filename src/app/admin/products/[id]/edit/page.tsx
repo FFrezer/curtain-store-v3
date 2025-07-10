@@ -1,8 +1,8 @@
 // src/app/admin/products/[id]/edit/page.tsx
-
 import { notFound } from "next/navigation";
 import db from "@/lib/prisma/db";
 import { Metadata } from "next";
+import EditProductForm from "@/components/EditProductForm";
 
 type Props = {
   params: {
@@ -11,7 +11,9 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const product = await db.product.findUnique({ where: { id: params.id } });
+  const product = await db.product.findUnique({
+    where: { id: params.id },
+  });
   return {
     title: product?.name ? `Edit ${product.name}` : "Edit Product",
   };
@@ -20,6 +22,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function EditProductPage({ params }: Props) {
   const product = await db.product.findUnique({
     where: { id: params.id },
+    include: {
+      images: true,
+      variants: true,
+    },
   });
 
   if (!product) return notFound();
@@ -27,75 +33,7 @@ export default async function EditProductPage({ params }: Props) {
   return (
     <div className="max-w-xl mx-auto p-6">
       <h1 className="text-2xl font-bold mb-4">✏️ Edit Product</h1>
-      <form
-        action={`/admin/products/${product.id}/edit/submit`}
-        method="POST"
-        className="space-y-4"
-      >
-        <input name="id" type="hidden" value={product.id} />
-
-        <div>
-          <label className="block text-sm font-medium">Name</label>
-          <input
-            name="name"
-            defaultValue={product.name}
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Price</label>
-          <input
-            name="price"
-            type="number"
-            step="0.01"
-            defaultValue={product.price ?? ""}
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Branch</label>
-          <input
-            name="branch"
-            defaultValue={product.branch}
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Room</label>
-          <input
-            name="room"
-            defaultValue={product.room}
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium">Category</label>
-          <input
-            name="category"
-            defaultValue={product.category}
-            className="w-full border px-3 py-2 rounded"
-          />
-        </div>
-<div>
-  <label className="block text-sm font-medium">Description</label>
-  <textarea
-    name="description"
-    defaultValue={product.description ?? ""}
-    className="w-full border px-3 py-2 rounded"
-  />
-</div>
-
-        <button
-          type="submit"
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-        >
-          Save Changes
-        </button>
-      </form>
+      <EditProductForm product={product} />
     </div>
   );
 }
