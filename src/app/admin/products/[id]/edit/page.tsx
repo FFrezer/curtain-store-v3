@@ -4,18 +4,16 @@ import db from "@/lib/prisma/db";
 import { Metadata } from "next";
 import EditProductForm from '@/components/EditProductForm';
 
-type PageProps = {
-  params: { id: string }
-};
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+
+export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
   const product = await db.product.findUnique({ where: { id: params.id } });
   return {
     title: product?.name ? `Edit ${product.name}` : "Edit Product",
   };
 }
 
-export default async function EditProductPage({ params }: PageProps) {
+export default async function EditProductPage({ params }:{ params: { id: string } }) {
   const product = await db.product.findUnique({
     where: { id: params.id },
     include: {
