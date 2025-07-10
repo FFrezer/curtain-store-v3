@@ -25,6 +25,7 @@ export default async function ProductPage({ params }: ProductPageProps) {
       <p className="text-gray-700 mb-2">
       {product.price !== null ? `Br ${product.price.toFixed(2)}` : "Contact for price"}</p>
      <p className="mb-6">{product.description}</p>
+     <p className="mb-6">{product.branch}</p>
      <button
      className="bg-black text-white px-6 py-2 rounded hover:bg-gray-800 transition mb-6"
      onClick={() => alert(`Added ${product.name} to cart!`)}>

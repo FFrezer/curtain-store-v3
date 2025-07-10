@@ -12,7 +12,7 @@ export async function POST(req: Request) {
     const branch = formData.get("branch") as string;
     const room = formData.get("room") as string;
     const category = formData.get("category") as string;
-
+    const description = formData.get("description") as string;
     if (!id || !name || !priceStr || !branch || !room || !category) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
@@ -35,11 +35,12 @@ export async function POST(req: Request) {
         branch: branch as Branch,
         room,
         category,
+        description,
       },
     });
 
     // Return a redirect or success message
-    return NextResponse.redirect(`/admin/products/${id}`);
+   return NextResponse.json({ success: true, redirectUrl: `/admin/products/${id}` });
 
   } catch (error) {
     console.error("Failed to update product:", error);
