@@ -66,18 +66,20 @@ export default function EditProductForm({ product }: { product: ProductWithExtra
       </div>
 
       <div>
-        <label className="block mb-1">Branch</label>
-        <input
-          name="branch"
-          className="border px-3 py-2 w-full rounded"
-          value={branch}
-          onChange={(e) => setBranch(e.target.value as 'MERKATO' | 'PIASSA' | 'GERJI')}
-          required
-        />
-          <option value="MERKATO">MERKATO</option>
-          <option value="PIASSA">PIASSA</option>
-          <option value="GERJI">GERJI</option>
-      </div>
+  <label className="block mb-1">Branch</label>
+  <select
+    name="branch"
+    className="border px-3 py-2 w-full rounded"
+    value={branch}
+    onChange={(e) => setBranch(e.target.value as 'MERKATO' | 'PIASSA' | 'GERJI')}
+    required
+  >
+    <option value="MERKATO">MERKATO</option>
+    <option value="PIASSA">PIASSA</option>
+    <option value="GERJI">GERJI</option>
+  </select>
+</div>
+
 
       <div>
         <label className="block mb-1">Room</label>
