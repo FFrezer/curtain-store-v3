@@ -10,13 +10,13 @@ export default function LocaleSwitcher() {
 
   function handleLocaleChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const newLocale = e.target.value;
-    const segments = pathname.split('/');
+    const segments = (pathname ?? '/').split('/');
     segments[1] = newLocale; // replace the old locale
     router.push(segments.join('/'));
   }
 
   return (
-    <select onChange={handleLocaleChange} defaultValue={pathname.split('/')[1]}>
+    <select onChange={handleLocaleChange} defaultValue={(pathname ?? '/').split('/')[1]}>
       {supportedLocales.map((locale) => (
         <option key={locale} value={locale}>
           {locale.toUpperCase()}

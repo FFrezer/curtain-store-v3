@@ -2,27 +2,23 @@
 
 import { notFound } from "next/navigation";
 import db from "@/lib/prisma/db";
-import { Metadata } from "next";
 import EditProductForm from "@/components/EditProductForm";
 
-// Don't define PageProps — just use plain object
-export async function generateStaticParams() {
+type EditProductPageProps = {
+  params: {
+    id: string;
+  };
+};
+
+export async function generateStaticParams(): Promise<{ id: string }[]> {
   const products = await db.product.findMany({ select: { id: true } });
   return products.map((p) => ({ id: p.id }));
 }
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const product = await db.product.findUnique({ where: { id: params.id } });
-  return { title: product?.name ? `Edit ${product.name}` : "Edit Product" };
-}
-
-export default async function EditProductPage({ params }: { params: { id: string } }) {
+export default async function EditProductPage({ params }: EditProductPageProps) {
   const product = await db.product.findUnique({
     where: { id: params.id },
-    include: {
-      images: true,
-      variants: true,
-    },
+    include: { images: true, variants: true },
   });
 
   if (!product) return notFound();

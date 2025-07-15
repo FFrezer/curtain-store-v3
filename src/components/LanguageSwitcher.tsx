@@ -22,7 +22,7 @@ export default function LanguageSwitcher() {
       {languages.map((lang) => (
         <Link
           key={lang.code}
-          href={pathname}
+          href={pathname ?? "/"}
           locale={lang.code}
           className={`border px-3 py-1 rounded hover:bg-gray-100 ${
             locale === lang.code ? 'bg-gray-200 font-bold' : ''

@@ -7,7 +7,7 @@ import { useState } from "react";
 export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/admin/products";
+  const callbackUrl = (searchParams && searchParams.get("callbackUrl")) || "/admin/products";
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
