@@ -1,21 +1,28 @@
-import db from "@/lib/prisma/db";
-import ProductCard from "@/components/AdminProductCard";
-import { notFound } from "next/navigation";
+// app/room/[room]/page.tsx
+import db from '@/lib/prisma/db';
+import ProductCard from '@/components/AdminProductCard';
+import { notFound } from 'next/navigation';
 
 interface RoomPageProps {
   params: { room: string };
 }
 
 export default async function RoomPage({ params }: RoomPageProps) {
-  const room = decodeURIComponent(params.room);
+  const {room} = params;
+
   const products = await db.product.findMany({
-  where: {
-    room: params.room,
-  },
-  include: {
-    images: true, // ✅ include associated images
-  },
-});
+    where: { room },
+    include: {
+      images: {
+        select: {
+          id: true,
+          createdAt: true,
+          productId: true,
+          url: true,
+        },
+      },
+    },
+  });
 
   if (products.length === 0) return notFound();
 
