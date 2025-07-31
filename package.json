@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "seed": "ts-node prisma/seed.js",
+    "seed": "ts-node prisma/seed.ts",
     "dev": "next dev",
     "build": "dotenv -e .env -- next build",
     "tailwind": "npx tailwindcss -i ./app/globals.css -o ./out.css --watch",
@@ -16,7 +16,7 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.832.0",
-    "@prisma/client": "^6.8.2",
+    "@prisma/client": "^6.13.0",
     "@tailwindcss/forms": "^0.5.10",
     "@tailwindcss/typography": "^0.5.16",
     "clsx": "^2.1.1",

@@ -9,6 +9,7 @@ async function main() {
     {
       name: "Velvet Curtain",
       category: "Living Room",
+      room: "living Room",
       price: 149.99,
       image: "/images/velvet.jpg",
       description: "Luxurious velvet curtains for a dramatic look.",
@@ -17,6 +18,7 @@ async function main() {
     {
       name: "Linen Drapes",
       category: "Bedroom",
+      room: "living Room",
       price: 89.99,
       image: "/images/linen.jpg",
       description: "Lightweight linen drapes for a soft, airy feel.",
