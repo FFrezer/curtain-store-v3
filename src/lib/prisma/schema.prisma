@@ -23,7 +23,7 @@ model Product {
   createdAt   DateTime       @default(now())
   variants    Variant[]
   images      ProductImage[] 
-  Image       Image[]
+  detailImage       Image[]
   published   Boolean  @default(true)
 }
 
