@@ -4,12 +4,12 @@
   "type": "module",
   "private": true,
   "scripts": {
-     "prebuild": "npx prisma validate && npx prisma generate",
-     "seed": "ts-node prisma/seed.ts",
+    "prebuild": "npx prisma validate && npx prisma generate",
     "dev": "next dev",
-    "build": "dotenv -e .env -- next build",
-    "tailwind": "npx tailwindcss -i ./app/globals.css -o ./out.css --watch",
+    "build": "next build",
     "start": "next start",
+    "seed": "ts-node prisma/seed.ts",
+    "tailwind": "npx tailwindcss -i ./app/globals.css -o ./out.css --watch",
     "lint": "next lint",
     "postinstall": "prisma generate",
     "clean": "rd /s /q node_modules && rd /s /q .next && npm install",
@@ -55,6 +55,7 @@
     "@types/react-dom": "^19",
     "@types/uuid": "^10.0.0",
     "autoprefixer": "^10.4.21",
+    "cross-env": "^10.0.0",
     "dotenv-cli": "^8.0.0",
     "eslint": "^9",
     "eslint-config-next": "^15.3.5",
@@ -67,5 +68,4 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"
   }
- 
 }
