@@ -4,7 +4,8 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "seed": "ts-node prisma/seed.ts",
+     "prebuild": "npx prisma validate && npx prisma generate",
+     "seed": "ts-node prisma/seed.ts",
     "dev": "next dev",
     "build": "dotenv -e .env -- next build",
     "tailwind": "npx tailwindcss -i ./app/globals.css -o ./out.css --watch",
