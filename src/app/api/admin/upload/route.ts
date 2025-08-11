@@ -1,16 +1,24 @@
+// app/api/admin/upload/route.ts
 import { NextRequest, NextResponse } from "next/server";
 import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import { v4 as uuidv4 } from "uuid";
-import db  from "@/lib/prisma/db";
+import db from "@/lib/prisma/db";
 import { Branch } from "@prisma/client";
+import { getServerSession } from "next-auth/next";
+import { authOptions } from "@/lib/auth"; // Adjust path to your authOptions
 
 export async function POST(req: NextRequest) {
   try {
-    // ✅ 1. Admin secret check
+    // ✅ 1. Auth check: either NextAuth session with admin role OR ADMIN_SECRET header
+    const session = await getServerSession(authOptions);
     const adminSecret = process.env.ADMIN_SECRET;
     const incomingSecret = req.headers.get("x-admin-secret");
-    if (!incomingSecret || incomingSecret !== adminSecret) {
+
+    const isAdminSession = session && session.user?.role === "admin";
+    const isAdminSecret = adminSecret && incomingSecret === adminSecret;
+
+    if (!isAdminSession && !isAdminSecret) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -22,18 +30,17 @@ export async function POST(req: NextRequest) {
     const description = formData.get("description")?.toString() || "";
     const price = parseFloat(formData.get("price")?.toString() || "0");
     const featured = formData.get("featured") === "true";
-    console.log("DEBUG: featured value from form =", featured);
     const room = formData.get("room")?.toString() || "General";
 
-    // ✅ 3. Collect uploaded files
+    // ✅ 3. Validate required fields
     const imageEntries = formData.getAll("images") as File[];
     if (!name || !category || imageEntries.length === 0) {
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
     }
 
+    // ✅ 4. Validate and save files
     const allowedTypes = ["image/jpeg", "image/png", "image/webp"];
     const maxSize = 2 * 1024 * 1024; // 2MB
-
     const uploadDir = path.join(process.cwd(), "public", "uploads");
     await mkdir(uploadDir, { recursive: true });
 
@@ -64,7 +71,7 @@ export async function POST(req: NextRequest) {
       imageUrls.push(`/uploads/${fileName}`);
     }
 
-    // ✅ 4. Save product to DB
+    // ✅ 5. Save product to DB
     const product = await db.product.create({
       data: {
         name,

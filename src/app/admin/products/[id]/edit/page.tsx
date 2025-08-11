@@ -3,6 +3,7 @@
 import { notFound } from "next/navigation";
 import db from "@/lib/prisma/db";
 import EditProductForm from "@/components/EditProductForm";
+import prisma from "@/lib/prisma/db";
 
 type EditProductPageProps = {
   params: {
@@ -11,7 +12,7 @@ type EditProductPageProps = {
 };
 
 export async function generateStaticParams(): Promise<{ id: string }[]> {
-  const products = await db.product.findMany({ select: { id: true } });
+  const products = await prisma.product.findMany({ select: { id: true } });
   return products.map((p) => ({ id: p.id }));
 }
 
