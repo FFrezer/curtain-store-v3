@@ -7,7 +7,7 @@ type CartItem = {
   price: number;
   quantity: number;
   image?: string; //
-  Description: string | null;
+  
 };
 export async function POST(req: Request) {
   const data = await req.json();
