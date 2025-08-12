@@ -12,7 +12,7 @@ type CartItem = {
   price: number;
   image: string;
   quantity: number;
-  Description: string | null;
+ 
 };
 
 export default function ProductDetail({ product }: { product: ProductWithExtras }) {
@@ -63,7 +63,7 @@ export default function ProductDetail({ product }: { product: ProductWithExtras 
         price: product.price ?? 0,
         image: selectedImage,
         quantity: 1,
-        Description: product.description,
+      
       });
     }
 
