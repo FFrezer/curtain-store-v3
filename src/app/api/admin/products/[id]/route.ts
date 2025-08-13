@@ -3,7 +3,6 @@ import { NextResponse } from 'next/server';
 import db from '@/lib/prisma/db';
 import type { NextRequest } from 'next/server';
 
-
 // GET /api/admin/products/[id]
 export async function GET(
   req: NextRequest,

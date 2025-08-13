@@ -1,107 +1,137 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
+import React, { useRef, useState } from "react";
+
+type BranchKey = "MERKATO" | "PIASSA" | "GERJI";
+
+const branchData: Record<
+  BranchKey,
+  { title: string; address: string; tel: string; whatsapp: string; map: string }
+> = {
+  MERKATO: {
+    title: "Merkato",
+    address:
+      "Addis Ababa Market Center | Merkato | አዲስ አበባ የገበያ መአከል | መርካቶ Shop A213 and B306/307",
+    tel: "0939 979 708 / 0912 605 602",
+    whatsapp: "251939979708",
+    map: "https://maps.google.com/maps?q=merkato%20addis%20ababa&t=&z=15&ie=UTF8&iwloc=&output=embed",
+  },
+  PIASSA: {
+    title: "Piyassa",
+    address:
+      "Down Town | Piazza | ዳውን ታውን | ፒያሳ Shopping Center, Shop G03",
+    tel: "0960 231 547 / 0930 405 766",
+    whatsapp: "251960231547",
+    map: "https://maps.google.com/maps?q=piyassa%20shopping%20center%20addis%20ababa&t=&z=15&ie=UTF8&iwloc=&output=embed",
+  },
+  GERJI: {
+    title: "Gerji",
+    address: "",
+    tel: "0940 707 077",
+    whatsapp: "251940707077",
+    map: "https://maps.google.com/maps?q=alfonso%20plaza%20gerji%20addis%20ababa&t=&z=15&ie=UTF8&iwloc=&output=embed",
+  },
+};
 
 export default function ContactPage() {
-  const [form, setForm] = useState({ name: '', email: '', message: '', company: '' });
-  const [loading, setLoading] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const branchRefs: Record<BranchKey, React.RefObject<HTMLDivElement | null>> = {
+    MERKATO: useRef<HTMLDivElement | null>(null),
+    PIASSA: useRef<HTMLDivElement | null>(null),
+    GERJI: useRef<HTMLDivElement | null>(null),
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
-    // Honeypot trap (if filled, it's spam)
-    if (form.company !== '') return;
-
-    setLoading(true);
-    const res = await fetch('/api/contact', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(form),
-    });
-
-    setLoading(false);
-    if (res.ok) {
-      alert('Message sent successfully!');
-      const whatsappMessage = `New inquiry from ${form.name}%0AEmail: ${form.email}%0AMessage: ${form.message}`;
-      window.open(`https://wa.me/251939979708?text=${encodeURIComponent(whatsappMessage)}`, '_blank');
-      setForm({ name: '', email: '', message: '', company: '' });
-    } else {
-      alert('Failed to send. Try again later.');
-    }
+  const scrollToBranch = (branch: BranchKey) => {
+    branchRefs[branch].current?.scrollIntoView({ behavior: "smooth" });
+    setSidebarOpen(false); // close sidebar on mobile after selection
   };
 
   return (
-    <div className="p-6 space-y-10">
-      <h1 className="text-3xl font-bold text-center">Contact Us</h1>
-
-      {/* Branch Info */}
-      <div className="grid gap-6 md:grid-cols-3">
-        <div>
-          <h2 className="font-semibold text-lg">Merkato - Addis Ababa</h2>
-          <p>Addis Ababa Market Center | Merkato | አዲስ አበባ የገበያ መአከል | መርካቶ Shop A213 and B306/307</p>
-          <p>Tel: 0939 979 708 / 0912 605 602</p>
-        </div>
-        <div>
-          <h2 className="font-semibold text-lg">Piyassa</h2>
-          <p>Down Town | Piazza | ዳውን ታውን | ፒያሳ 9.031075328591054, 38.75077497875843Shopping Center, Shop G03</p>
-          <p>Tel: 0960 231 547 / 0930 405 766</p>
-        </div>
-        <div>
-          <h2 className="font-semibold text-lg">Gerji - Alfonso Plaza</h2>
-          <p>Tel: 0940 707 077</p>
-        </div>
-      </div>
-
-      {/* Maps */}
-      <div className="grid gap-6 md:grid-cols-3">
-        <iframe className="w-full h-64 rounded" src="https://maps.google.com/maps?q=merkato%20addis%20ababa&t=&z=15&ie=UTF8&iwloc=&output=embed" allowFullScreen loading="lazy" />
-        <iframe className="w-full h-64 rounded" src="https://maps.google.com/maps?q=piyassa%20shopping%20center%20addis%20ababa&t=&z=15&ie=UTF8&iwloc=&output=embed" allowFullScreen loading="lazy" />
-        <iframe className="w-full h-64 rounded" src="https://maps.google.com/maps?q=alfonso%20plaza%20gerji%20addis%20ababa&t=&z=15&ie=UTF8&iwloc=&output=embed" allowFullScreen loading="lazy" />
-      </div>
-
-      {/* Contact Form */}
-      <form onSubmit={handleSubmit} className="space-y-4 max-w-xl mx-auto">
-        {/* Honeypot field */}
-        <input type="text" name="company" value={form.company} onChange={handleChange} className="hidden" tabIndex={-1} autoComplete="off" />
-
-        <input
-          type="text"
-          name="name"
-          placeholder="Your Name"
-          value={form.name}
-          onChange={handleChange}
-          className="w-full border p-3 rounded"
-          required
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Your Email"
-          value={form.email}
-          onChange={handleChange}
-          className="w-full border p-3 rounded"
-          required
-        />
-        <textarea
-          name="message"
-          placeholder="Your Message"
-          value={form.message}
-          onChange={handleChange}
-          className="w-full border p-3 rounded h-32"
-          required
-        />
+    <div className="flex flex-col md:flex-row">
+      {/* Mobile toggle button */}
+      <div className="md:hidden flex justify-end p-2 bg-gray-100">
         <button
-          type="submit"
-          disabled={loading}
-          className="w-full bg-black text-white py-3 rounded hover:bg-gray-800 transition"
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="px-3 py-2 bg-gray-200 rounded shadow"
         >
-          {loading ? 'Sending...' : 'Send Message'}
+          {sidebarOpen ? "Close Menu" : "Branches"}
         </button>
-      </form>
+      </div>
+
+      {/* Sidebar navigation */}
+      <div
+        className={`${
+          sidebarOpen ? "block" : "hidden"
+        } md:block w-full md:w-1/4 p-4 bg-gray-100`}
+      >
+        {(Object.keys(branchData) as BranchKey[]).map((branch) => (
+          <button
+            key={branch}
+            onClick={() => scrollToBranch(branch)}
+            className="block w-full text-left py-2 px-3 mb-2 rounded bg-white shadow hover:bg-gray-50"
+          >
+            {branchData[branch].title}
+          </button>
+        ))}
+      </div>
+
+      {/* Contact + Map sections */}
+      <div className="flex-1 p-4 space-y-8">
+        {(Object.keys(branchData) as BranchKey[]).map((branch) => (
+          <div
+            key={branch}
+            ref={branchRefs[branch]}
+            className="bg-white rounded-lg shadow p-4"
+          >
+            <h2 className="text-lg font-semibold mb-1">
+              {branchData[branch].title}
+            </h2>
+            {branchData[branch].address && (
+              <p className="text-sm text-gray-600 mb-1">
+                {branchData[branch].address}
+              </p>
+            )}
+            <p className="text-sm text-gray-600 mb-2">
+              Tel: {branchData[branch].tel}
+            </p>
+
+            {/* WhatsApp Contact Form */}
+            <form
+              action={`https://wa.me/${branchData[branch].whatsapp}`}
+              method="get"
+              target="_blank"
+              className="mt-2"
+            >
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Message {branchData[branch].title} on WhatsApp:
+              </label>
+              <textarea
+                name="text"
+                rows={3}
+                placeholder="Type your message..."
+                className="w-full p-2 border rounded mb-2"
+              ></textarea>
+              <button
+                type="submit"
+                className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+              >
+                Send via WhatsApp
+              </button>
+            </form>
+
+            {/* Google Map */}
+            <iframe
+              src={branchData[branch].map}
+              className="w-full h-64 mt-4 rounded"
+              style={{ border: 0 }}
+              loading="lazy"
+              allowFullScreen
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

@@ -4,7 +4,6 @@ import { notFound } from "next/navigation";
 import db from "@/lib/prisma/db";
 import EditProductForm from "@/components/EditProductForm";
 
-
 type EditProductPageProps = {
   params: {
     id: string;

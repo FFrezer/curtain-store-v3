@@ -58,14 +58,6 @@ export default function ShopPage() {
         )}
       </div>
 
-      {/* Search input */}
-      <input
-        type="text"
-        placeholder="Search..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full p-2 border mb-6 rounded"
-      />
 
       {/* Featured Products */}
       {featuredProducts.length > 0 && (

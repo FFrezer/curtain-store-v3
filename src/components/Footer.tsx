@@ -10,7 +10,7 @@ export default function Footer() {
         <p className="mt-1 text-xs sm:text-sm text-gray-400">
           Designed by{" "}
           <a
-            href="https://curtain-store-v.vercel.app/"
+            href="https://github.com/FFrezer"
             target="_blank"
             rel="noopener noreferrer"
             className="text-white font-semibold hover:underline"
